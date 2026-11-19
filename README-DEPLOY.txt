@@ -1,26 +1,35 @@
-MWALIMU.COM MULTI-PAGE WEBSITE
-================================
+MWALIMU.COM — UPDATED MULTI-PAGE WEBSITE
+==========================================
 
-Files:
-- index.html       Homepage
-- resources.html   Teaching resource library
-- ai.html          Mwalimu AI
-- jobs.html        Jobs
-- academy.html     Mwalimu Academy
-- community.html   Community
-- updates.html     Latest updates and article detail links
+Upload ALL files in this folder to the same published root folder in your
+GitHub repository. Do not rename the files.
+
+PUBLIC PAGES
+- index.html
+- resources.html
+- ai.html
+- jobs.html
+- academy.html
+- community.html
+- updates.html
+
+ADMIN
+- mwalimu-admin-1.html (existing admin page URL)
+- mwalimu-admin-content-manager.html (same dashboard, descriptive filename)
+
+SHARED SCRIPT
+- mwalimu-public-content.js
+
+SUPABASE
+The public pages use the existing Mwalimu.com Supabase project and the
+mwalimu_site_content table. The admin dashboard writes content to that table.
+Only records marked Published are displayed on the public pages. Drafts remain
+visible only in the administrator dashboard.
+
+The existing teaching-resource library, authentication, and page navigation
+are retained. If no content has been published for a section, its existing
+built-in page content remains visible as a fallback.
 
 DEPLOYMENT
-Upload ALL seven HTML files to the same published root folder in your GitHub repository.
-Keep the existing Supabase connection and do not rename the files.
-The current links use explicit .html URLs so they work on a basic static hosting setup
-without needing custom Cloudflare routing rules.
-
-The homepage and each destination now load as separate browser documents. A small
-top progress line appears when navigating between the Mwalimu pages.
-
-IMPORTANT
-This is the first multi-page conversion built from the supplied latest index.html.
-The page files retain the shared markup and existing Supabase integration so that
-the resource library and account/download code remain available. The admin dashboard
-has not been modified.
+Upload every file in this folder to the root of the same GitHub repository
+connected to Cloudflare Pages. Keep all filenames exactly as they are.
