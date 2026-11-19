@@ -572,6 +572,42 @@
       .news-read-button { padding:9px 12px; font-size:10px; }
       .news-original-link { font-size:10px; }
     }
+
+    /* Final layout lock: every item in the live feed uses the same side-by-side card. */
+    #updatesGrid > article,
+    #updatesGrid > .news-card {
+      display:grid !important;
+      grid-template-columns:minmax(112px,35%) minmax(0,1fr) !important;
+      flex-direction:initial !important;
+      align-items:stretch !important;
+      min-width:0;
+    }
+    #updatesGrid > article > .news-card-image,
+    #updatesGrid > article > :first-child {
+      grid-column:1 !important;
+      grid-row:1 !important;
+      width:100% !important;
+      height:100% !important;
+      min-height:205px !important;
+      align-self:stretch !important;
+      overflow:hidden;
+    }
+    #updatesGrid > article > .news-card-content,
+    #updatesGrid > article > :nth-child(2) {
+      grid-column:2 !important;
+      grid-row:1 !important;
+      min-width:0 !important;
+      width:100% !important;
+    }
+    #updatesGrid .news-card-image img { width:100% !important; height:100% !important; min-height:205px; object-fit:cover; }
+    #updatesGrid .news-card-image img.news-document-image { object-fit:contain; background:#f4f5ef; }
+    @media(max-width:600px) {
+      #updatesGrid > article,
+      #updatesGrid > .news-card { grid-template-columns:minmax(105px,35%) minmax(0,1fr) !important; }
+      #updatesGrid > article > .news-card-image,
+      #updatesGrid > article > :first-child { min-height:190px !important; }
+      #updatesGrid .news-card-image img { min-height:190px; }
+    }
   </style>
 </head>
 <body class="page-updates">
@@ -1301,7 +1337,7 @@
     try { return new URL(item.link_url).hostname.replace(/^www\./,''); } catch (_) { return 'Education news'; }
   }
   function imageFor(item) {
-    const saved = safeUrl(item.image_url);
+    const saved = safeImageUrl(item.image_url);
     if (saved) return saved;
     const link = String(item.link_url || '');
     if (link.includes('/uace-2026-week-2-schedule')) return 'https://uneb.ac.ug/wp-content/uploads/2026/11/UACE-WK-2-254x300.jpeg';
@@ -1319,7 +1355,19 @@
     return 'Open the original report to read the full update from the publisher.';
   }
   function safeUrl(value) {
-    try { const u = new URL(value); return ['https:','http:'].includes(u.protocol) ? u.href : ''; } catch (_) { return ''; }
+    try { const u = new URL(String(value || '').trim(), location.href); return ['https:','http:'].includes(u.protocol) ? u.href : ''; } catch (_) { return ''; }
+  }
+  function safeImageUrl(value) {
+    let raw = String(value || '').trim();
+    if (!raw) return '';
+    // Some feeds store an image HTML fragment instead of a bare URL.
+    const attr = raw.match(/(?:src|content)\s*=\s*["']([^"']+)["']/i);
+    if (attr) raw = attr[1];
+    raw = raw.replace(/^['"\s]+|['"\s]+$/g, '');
+    if (raw.startsWith('//')) raw = 'https:' + raw;
+    // Normalize doubled path slashes without damaging the https:// prefix.
+    raw = raw.replace(/^(https?:\/\/[^/]+)\/(?:\/)+/i, '$1/').replace(/([^:]\/)\/{2,}/g, '$1/');
+    return safeUrl(raw);
   }
   function renderCards() {
     status.textContent = updates.length ? `${updates.length} latest ${updates.length === 1 ? 'update' : 'updates'} from education sources` : 'No published education updates are available yet.';
@@ -1332,7 +1380,7 @@
       const link = safeUrl(item.link_url);
       const isNotice = /uace-2026-week-2-schedule|caution-to-uce-heads-of-centres/.test(String(item.link_url || ''));
       const fallback = '<div class="news-image-fallback"><span>MWALIMU.COM</span><strong>EDUCATION<br>NEWS</strong></div>';
-      const imageMarkup = img ? `<img class="${isNotice ? 'news-document-image' : ''}" src="${escapeHtml(img)}" alt="${escapeHtml(item.title)}" loading="lazy">` : fallback;
+      const imageMarkup = img ? `<img class="${isNotice ? 'news-document-image' : ''}" src="${escapeHtml(img)}" alt="${escapeHtml(item.title)}" loading="lazy" decoding="async">` : fallback;
       return `<article class="news-card">
         <div class="news-card-image">${imageMarkup}</div>
         <div class="news-card-content">
