@@ -39,7 +39,7 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:#43856a;box-shado
 .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .stat{border:1px solid #dce9df;border-radius:16px;padding:14px 16px;min-width:0}
 .stat b{font-size:26px;line-height:1.1}
-.content-manager-grid{display:grid;grid-template-columns:minmax(0,1fr)!important;gap:22px;align-items:start;margin-top:14px}
+.content-manager-grid{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:22px;align-items:start;margin-top:14px}
 .content-manager-grid>div{min-width:0}
 #siteContentPanel{margin-top:22px!important;padding:24px}
 #siteContentPanel>h2{font-size:22px}
@@ -111,24 +111,27 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:#43856a;box-shado
  #contentList .resource-actions{grid-template-columns:1fr 1fr}
 }
 
-
-/* Content manager: always stack editor first, content list second */
-.content-manager-grid{grid-template-columns:minmax(0,1fr)!important;width:100%;max-width:100%}
+/* Content editor first; saved content list underneath, never beside it */
+.content-manager-grid{display:block!important;width:100%;max-width:100%;margin-top:14px}
 .content-manager-grid>div{width:100%;max-width:100%;min-width:0}
 #contentForm{width:100%;max-width:100%}
-#contentList{width:100%;max-width:100%;overflow:hidden}
-#contentList .content-row{width:100%;min-width:0;display:flex;flex-direction:column;align-items:stretch;gap:10px}
-#contentList .content-row>div{width:100%;min-width:0;max-width:100%}
-#contentList .content-row h3,
-#contentList .content-row .meta,
-#contentList .content-preview{max-width:100%;overflow-wrap:anywhere;word-break:normal}
+.content-library-section{display:block;width:100%;max-width:100%;min-width:0;margin-top:26px;padding-top:22px;border-top:1px solid var(--line)}
+.content-library-title{margin:0 0 14px;font-size:18px;font-weight:800;letter-spacing:-.25px}
+.content-library-section .toolbar{display:flex;flex-wrap:wrap;gap:10px;width:100%;margin-bottom:12px}
+.content-library-section .toolbar input{flex:1 1 220px;min-width:0}
+.content-library-section .toolbar select{flex:0 1 190px;min-width:0}
+#contentList{display:block;width:100%;max-width:100%;min-width:0;overflow:hidden}
+#contentList .content-row{display:flex;flex-direction:column;align-items:stretch;width:100%;max-width:100%;min-width:0;gap:10px;padding:17px 0;border-top:1px solid var(--line)}
+#contentList .content-row>div{width:100%;max-width:100%;min-width:0}
+#contentList .content-row h3,#contentList .content-row .meta,#contentList .content-row .content-preview{max-width:100%;overflow-wrap:anywhere}
 #contentList .content-preview{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
-#contentList .resource-actions{display:flex;flex-direction:row;flex-wrap:wrap;justify-content:flex-start}
-@media(max-width:600px){
-  .content-manager-grid{gap:16px}
-  #siteContentPanel{width:100%;max-width:100%;overflow:hidden}
-  #contentList .content-row{padding:15px 0}
-  #contentList .resource-actions{display:flex;flex-wrap:wrap}
+#contentList .resource-actions{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:8px}
+@media(max-width:700px){
+ #siteContentPanel{padding:18px}
+ .content-library-section{margin-top:22px;padding-top:18px}
+ .content-library-section .toolbar{display:grid;grid-template-columns:minmax(0,1fr);gap:9px}
+ .content-library-section .toolbar input,.content-library-section .toolbar select{width:100%;max-width:100%!important}
+ #contentList .content-row{padding:15px 0}
 }
 
 </style>
@@ -192,7 +195,11 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:#43856a;box-shado
      <div class="row"><div><label>Display order</label><input id="contentOrder" type="number" min="0" value="0"></div><div><label>Status</label><select id="contentPublished"><option value="false">Draft</option><option value="true">Published</option></select></div></div>
      <div class="actions"><button class="btn" id="contentSaveBtn" type="submit">Save content</button><button class="btn secondary" id="contentCancelBtn" type="button" hidden>Cancel edit</button></div><p id="contentStatus" class="status" role="status"></p>
     </form></div>
-    <div><div class="toolbar"><input id="contentSearch" placeholder="Search website content…"><select id="contentFilter" style="max-width:190px"><option value="">All sections</option><option value="update">Updates</option><option value="hero">Hero slides</option><option value="ai">Mwalimu AI</option><option value="job">Jobs</option><option value="academy">Academy</option><option value="community">Community</option><option value="site_text">Other text</option></select></div><div id="contentList"><div class="empty">Loading website content…</div></div></div>
+   </div>
+   <div class="content-library-section">
+    <h3 class="content-library-title">Existing website content</h3>
+    <div class="toolbar"><input id="contentSearch" placeholder="Search website content…"><select id="contentFilter" style="max-width:190px"><option value="">All sections</option><option value="update">Updates</option><option value="hero">Hero slides</option><option value="ai">Mwalimu AI</option><option value="job">Jobs</option><option value="academy">Academy</option><option value="community">Community</option><option value="site_text">Other text</option></select></div>
+    <div id="contentList"><div class="empty">Loading website content…</div></div>
    </div>
   </section>
 </main>
