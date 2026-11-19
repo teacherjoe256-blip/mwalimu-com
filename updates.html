@@ -545,21 +545,32 @@
     .news-image-fallback-large { height:230px; min-height:230px; border-radius:17px; margin:0 0 22px; }
     .update-source-link { display:inline-flex; margin-top:14px; padding:12px 17px; border-radius:99px; background:var(--forest); color:white; font-size:12px; font-weight:850; }
     .update-source-link[hidden] { display:none; }
-    @media(max-width:850px) { .updates-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    /* News feed: consistent image-left / text-right cards at every screen size. */
+    .updates-grid { grid-template-columns:1fr; gap:16px; max-width:980px; }
+    .news-card { display:grid; grid-template-columns:minmax(135px, 32%) minmax(0,1fr); align-items:stretch; }
+    .news-card-image { height:100%; min-height:220px; }
+    .news-card-content { min-width:0; padding:20px 22px; }
+    .news-card h2 { font-size:clamp(17px,2.1vw,22px); line-height:1.2; }
+    .news-card p { font-size:13px; line-height:1.55; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+    .news-card-footer { margin-top:auto; }
+    .news-image-fallback { min-height:220px; }
+    @media(max-width:850px) { .updates-grid { grid-template-columns:1fr; } }
     @media(max-width:600px) {
       .updates-page { padding:28px 0 44px; }
       .updates-heading { display:block; }
       .updates-live { margin-top:16px; }
-      .updates-grid { grid-template-columns:1fr; gap:14px; }
-      .news-card { display:grid; grid-template-columns:36% minmax(0,1fr); align-items:stretch; }
-      .news-card-image { height:100%; min-height:205px; }
-      .news-card-content { padding:14px; }
-      .news-card h2 { font-size:16px; margin:8px 0; }
-      .news-card p { font-size:11px; line-height:1.5; }
-      .news-card-footer { align-items:flex-start; flex-direction:column; gap:9px; padding-top:13px; }
-      .news-image-fallback { min-height:205px; padding:12px; }
-      .news-image-fallback strong { font-size:22px; }
-      .news-card-meta { font-size:9px; }
+      .updates-grid { grid-template-columns:1fr; gap:13px; }
+      .news-card { grid-template-columns:minmax(112px, 35%) minmax(0,1fr); border-radius:17px; }
+      .news-card-image, .news-image-fallback { min-height:190px; }
+      .news-card-content { padding:12px 13px; }
+      .news-card h2 { font-size:15px; margin:7px 0; }
+      .news-card p { font-size:11px; line-height:1.45; -webkit-line-clamp:3; }
+      .news-card-footer { align-items:flex-start; flex-direction:column; gap:8px; padding-top:11px; }
+      .news-image-fallback { padding:10px; }
+      .news-image-fallback strong { font-size:20px; }
+      .news-card-meta { font-size:8px; gap:5px; }
+      .news-read-button { padding:9px 12px; font-size:10px; }
+      .news-original-link { font-size:10px; }
     }
   </style>
 </head>
@@ -1268,6 +1279,7 @@
       if (crumb) text = text.slice(crumb.index + crumb[0].length);
       else text = text.replace(/^.*?you are here:\s*/i, '');
     }
+    text = text.replace(/^\s*\d{1,2}\s+[A-Z][a-z]{2}\s+\d{2}\s+Notice\s+No\s+Comments\s*/i, '');
     text = text.replace(/(?:Share this post|Share on X|Share on Facebook|Share on WhatsApp|Author:).*$/i, '');
     text = text.replace(/(?:Source:\s*[^.]+\.?\s*)?(?:Published\s+\d{4}-\d{2}-\d{2}\.?\s*)?$/i, '');
     text = text.replace(/\s+[A-Z][a-z]+\s+\d{1,2},\s+\d{4}\s*$/, '');
@@ -1299,9 +1311,12 @@
   }
   function excerpt(item) {
     const clean = cleanStory(item);
-    if (clean) return clean.length > 190 ? clean.slice(0,187).replace(/\s+\S*$/,'') + '…' : clean;
-    if (imageFor(item)) return 'The original notice is available as an image. Open the story to view the notice and visit the source for the full report.';
-    return 'The source record contains the headline, but no readable article text was saved. Open the original report for the full details.';
+    const savedSummary = decodeText(item.summary || '').replace(/^\s*\d{1,2}\s+[A-Z][a-z]{2}\s+\d{2}\s+Notice\s+No\s+Comments\s*/i, '').replace(/\b(?:skip to content|home|about us|toll free|facebook|search|menu)\b/gi, ' ').replace(/\s+/g, ' ').trim();
+    const usableSummary = savedSummary.length >= 55 && !/skip to content|toll free|facebook|privacy policy/i.test(savedSummary);
+    const text = clean || (usableSummary ? savedSummary : '');
+    if (text) return text.length > 145 ? text.slice(0,142).replace(/\s+\S*$/,'') + '…' : text;
+    if (imageFor(item)) return 'The original notice is available as an image. Open the story to view the notice and visit the publisher for details.';
+    return 'Open the original report to read the full update from the publisher.';
   }
   function safeUrl(value) {
     try { const u = new URL(value); return ['https:','http:'].includes(u.protocol) ? u.href : ''; } catch (_) { return ''; }
@@ -1317,7 +1332,7 @@
       const link = safeUrl(item.link_url);
       const isNotice = /uace-2026-week-2-schedule|caution-to-uce-heads-of-centres/.test(String(item.link_url || ''));
       const fallback = '<div class="news-image-fallback"><span>MWALIMU.COM</span><strong>EDUCATION<br>NEWS</strong></div>';
-      const imageMarkup = img ? `<img class="${isNotice ? 'news-document-image' : ''}" src="${img}" alt="${escapeHtml(item.title)}" loading="lazy" onerror="this.parentElement.innerHTML='${fallback.replace(/'/g,"&#39;")}'">` : fallback;
+      const imageMarkup = img ? `<img class="${isNotice ? 'news-document-image' : ''}" src="${escapeHtml(img)}" alt="${escapeHtml(item.title)}" loading="lazy">` : fallback;
       return `<article class="news-card">
         <div class="news-card-image">${imageMarkup}</div>
         <div class="news-card-content">
@@ -1328,6 +1343,12 @@
         </div>
       </article>`;
     }).join('');
+    grid.querySelectorAll('.news-card-image img').forEach(image => {
+      image.addEventListener('error', () => {
+        const holder = image.parentElement;
+        if (holder) holder.innerHTML = '<div class="news-image-fallback"><span>MWALIMU.COM</span><strong>EDUCATION<br>NEWS</strong></div>';
+      }, { once: true });
+    });
   }
   function escapeHtml(value) {
     return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
