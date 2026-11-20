@@ -1,8 +1,8 @@
-MWALIMU.COM — UPDATED MULTI-PAGE WEBSITE
-==========================================
+MWALIMU.COM — CORRECTED WEBSITE FILES
+=====================================
 
-Upload ALL files in this folder to the same published root folder in your
-GitHub repository. Do not rename the files.
+Upload the contents of this ZIP to the ROOT of the existing GitHub repository
+connected to Cloudflare Pages. Keep the filenames exactly as shown.
 
 PUBLIC PAGES
 - index.html
@@ -13,23 +13,32 @@ PUBLIC PAGES
 - community.html
 - updates.html
 
-ADMIN
-- mwalimu-admin-1.html (existing admin page URL)
-- mwalimu-admin-content-manager.html (same dashboard, descriptive filename)
+ADMIN PAGES
+- mwalimu-admin-1.html
+- mwalimu-admin-content-manager.html
 
-SHARED SCRIPT
+SHARED / CONFIGURATION
 - mwalimu-public-content.js
+- _redirects
+- mwalimu-site-content-setup.sql (run only if the table/policies have not already been created)
 
-SUPABASE
-The public pages use the existing Mwalimu.com Supabase project and the
-mwalimu_site_content table. The admin dashboard writes content to that table.
-Only records marked Published are displayed on the public pages. Drafts remain
-visible only in the administrator dashboard.
+IMPORTANT
+- The six non-home public pages now display their own page-specific content section
+  instead of repeating the full homepage.
+- Existing navigation, Supabase client setup, authentication scripts, and admin files
+  have been retained from the supplied files.
+- Static content remains the fallback if published database content is unavailable.
+- The public content loader dispatches published rows as a browser event; it does not
+  perform writes or expose any service-role key.
+- Do not run the SQL migration again if it has already been successfully applied.
 
-The existing teaching-resource library, authentication, and page navigation
-are retained. If no content has been published for a section, its existing
-built-in page content remains visible as a fallback.
+DEPLOYMENT CHECKLIST
+1. Back up the current GitHub files.
+2. Upload/replace all files in this package at the repository root.
+3. Wait for Cloudflare Pages deployment to finish.
+4. Test each public page, admin sign-in, resource browsing/downloads, and mobile navigation.
+5. Check browser console and Supabase logs for runtime errors.
 
-DEPLOYMENT
-Upload every file in this folder to the root of the same GitHub repository
-connected to Cloudflare Pages. Keep all filenames exactly as they are.
+This package has been checked for file presence, HTML parsing, unique IDs, and local
+page-section routing. Live Cloudflare/Supabase behaviour cannot be certified from
+local files alone and must be tested on the deployed site.
