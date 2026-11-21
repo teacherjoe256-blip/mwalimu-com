@@ -1,5 +1,4 @@
-
-/* Mwalimu.com public content bridge
+/* Mwalimu.site public content bridge
    Reads administrator-published content from public.mwalimu_site_content.
    Existing page content remains as a fallback when no records are published. */
 (() => {
@@ -17,9 +16,9 @@
     return node;
   }
   function dateLabel(value) {
-    if (!value) return 'Mwalimu.com update';
+    if (!value) return 'Mwalimu.site update';
     const d = new Date(value);
-    return Number.isNaN(d.getTime()) ? 'Mwalimu.com update' :
+    return Number.isNaN(d.getTime()) ? 'Mwalimu.site update' :
       d.toLocaleDateString('en-UG', { day: 'numeric', month: 'short', year: 'numeric' });
   }
   function makeDetailOpener(item, items) {
@@ -73,19 +72,19 @@
     if (imageUrl) {
       const img = el('img');
       img.src = imageUrl;
-      img.alt = item.title || 'Mwalimu.com content';
+      img.alt = item.title || 'Mwalimu.site content';
       img.loading = 'lazy';
       article.append(img);
     }
     const copy = el('div', 'feature-content');
     copy.append(el('span', 'tag', ({
       update: 'Mwalimu updates',
-      hero: 'Featured on Mwalimu.com',
+      hero: 'Featured on Mwalimu.site',
       ai: 'Mwalimu AI',
       job: 'Mwalimu jobs',
       academy: 'Mwalimu Academy',
       community: 'Mwalimu community'
-    })[type] || 'Mwalimu.com'));
+    })[type] || 'Mwalimu.site'));
     copy.append(el('h2', '', item.title || ''));
     if (item.summary) copy.append(el('p', '', item.summary));
     const cta = el('a', 'feature-cta', type === 'update' ? 'Read more →' : 'Learn more →');
@@ -108,9 +107,7 @@
     } else {
       cta.remove();
     }
-    if (cta.isConnected || cta.parentNode === null) {
-      if (type === 'update' || item.link_url) copy.append(cta);
-    }
+    if (type === 'update' || item.link_url) copy.append(cta);
     article.append(copy);
     return article;
   }
@@ -233,4 +230,3 @@
     loadPublishedContent();
   }
 })();
-                         
