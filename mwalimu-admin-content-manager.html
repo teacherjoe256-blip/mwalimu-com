@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#123c2e">
-<title>Mwalimu.com | Admin</title>
+<title>Mwalimu.site | Admin</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--green:#14533e;--green2:#e9f3ed;--ink:#17231e;--muted:#6b7771;--line:#e2e9e4;--paper:#f5f8f5;--white:#fff;--red:#a52d2d}
@@ -135,11 +135,12 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:#43856a;box-shado
 }
 
 </style>
+<meta name="robots" content="noindex, nofollow, noarchive">
 </head>
 <body>
 <header><div class="brand">Mwalimu<span>.com</span> <small style="font-size:11px;font-weight:600;opacity:.8">ADMIN</small></div><div class="header-right"><span id="who" class="topnote"></span><button id="logout" class="btn secondary small" hidden>Sign out</button></div></header>
 <section id="login" class="panel">
- <div class="eyebrow">Administrator access</div><h1>Welcome back.</h1><p class="sub">Sign in with your Mwalimu.com administrator account.</p>
+ <div class="eyebrow">Administrator access</div><h1>Welcome back.</h1><p class="sub">Sign in with your mwalimu.site administrator account.</p>
  <form id="loginForm"><label>Email address</label><input id="email" type="email" autocomplete="username" required value="adminmwalimu@gmail.com"><label>Password</label><input id="password" type="password" autocomplete="current-password" required><button class="btn" style="width:100%;margin-top:18px" id="loginBtn">Sign in to dashboard</button></form>
  <p style="text-align:center;margin:12px 0 0"><button type="button" id="forgotPassword" class="btn secondary">Forgot password?</button></p>
  <p id="loginStatus" class="status" role="status"></p>
@@ -148,7 +149,7 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:#43856a;box-shado
 <section id="passwordReset" class="panel" hidden>
  <div class="eyebrow">Account security</div>
  <h1>Create a new password.</h1>
- <p class="sub">Choose a new password for your Mwalimu.com administrator account.</p>
+ <p class="sub">Choose a new password for your mwalimu.site administrator account.</p>
  <form id="resetPasswordForm">
   <label>New password</label>
   <input id="newPassword" type="password" minlength="8" autocomplete="new-password" required>
@@ -160,7 +161,7 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:#43856a;box-shado
 </section>
 
 <main id="app" hidden>
- <div class="intro"><div><div class="eyebrow">Content management</div><h1>Resource dashboard</h1><p class="sub">Upload, organise and publish teaching materials for the Mwalimu.com library.</p></div></div>
+ <div class="intro"><div><div class="eyebrow">Content management</div><h1>Resource dashboard</h1><p class="sub">Upload, organise and publish teaching materials for the mwalimu.site library.</p></div></div>
  <div class="stats"><div class="stat"><b id="totalCount">0</b><span>ALL RESOURCES</span></div><div class="stat"><b id="publishedCount">0</b><span>PUBLISHED</span></div><div class="stat"><b id="draftCount">0</b><span>DRAFTS</span></div></div>
  <div class="grid">
   <section class="panel">

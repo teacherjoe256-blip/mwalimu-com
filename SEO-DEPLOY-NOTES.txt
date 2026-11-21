@@ -1,0 +1,39 @@
+MWALIMU.SITE SEO + FOOTER UPDATE
+
+Upload the contents of this folder to the root of the existing Mwalimu.site Cloudflare Pages project, replacing the corresponding files. Keep the existing Supabase project and configuration unchanged.
+
+PUBLIC PAGES
+- index.html
+- resources.html
+- jobs.html
+- academy.html
+- ai.html
+- updates.html
+- community.html
+- about.html
+- contact.html
+- privacy.html
+- terms.html
+
+SEO FILES
+- robots.txt
+- sitemap.xml
+
+ADMIN PAGES
+- mwalimu-admin-1.html
+- mwalimu-admin-content-manager.html
+These are marked noindex/nofollow because admin tools should not appear in Google results.
+
+WHAT CHANGED
+- Unified brand/domain references to Mwalimu.site across the supplied pages.
+- Added unique titles, descriptions, canonical URLs, Open Graph/Twitter metadata and structured data.
+- Repaired footer links for About, Contact, Privacy and Terms by adding working pages.
+- Added the supplied phone, WhatsApp and email contacts as clickable links.
+- Added the supplied Mwalimu WhatsApp community invitation and a dedicated search-friendly community landing page.
+- Added sitemap.xml and robots.txt.
+- Standardized footer copyright to: © Mwalimu.site 2026
+
+IMPORTANT
+SEO improvements help search engines understand and discover the pages; they cannot guarantee first position for any keyword or guarantee that a WhatsApp invite itself ranks first. The community landing page is optimized for relevant searches such as teachers WhatsApp group Uganda and teachers community Uganda.
+
+After deployment, submit https://mwalimu.site/sitemap.xml in Google Search Console and inspect/request indexing for the updated public URLs.
