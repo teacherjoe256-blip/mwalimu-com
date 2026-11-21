@@ -6,8 +6,6 @@
 <meta name="theme-color" content="#123c2e">
 <title>Mwalimu.com | Admin</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
 <style>
 :root{--green:#14533e;--green2:#e9f3ed;--ink:#17231e;--muted:#6b7771;--line:#e2e9e4;--paper:#f5f8f5;--white:#fff;--red:#a52d2d}
 *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
@@ -22,32 +20,164 @@ label{display:block;font-weight:750;font-size:12px;margin:13px 0 6px}input,selec
 .toolbar{display:flex;gap:10px;margin:14px 0;flex-wrap:wrap}.toolbar input{flex:1;min-width:160px}.resource{border-top:1px solid var(--line);padding:15px 0;display:flex;justify-content:space-between;gap:15px;align-items:center}.resource:first-child{border-top:0}.resource h3{font-size:15px;margin:0 0 3px}.meta{color:var(--muted);font-size:12px}.pill{display:inline-block;border-radius:99px;padding:3px 9px;font-size:10px;font-weight:850;background:#eef2ef;color:#526057;margin:4px 4px 0 0}.pill.live{background:#e4f5e9;color:#17623b}.pill.draft{background:#fff2dd;color:#86550c}.resource-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
 #login,#passwordReset{max-width:420px;margin:9vh auto;padding:28px}#app[hidden],#login[hidden],#passwordReset[hidden]{display:none!important}.empty{padding:28px;text-align:center;color:var(--muted)}.topnote{font-size:12px;color:#d5e7db}.file-note{font-size:11px;color:var(--muted);margin-top:5px}
 .content-row{border-top:1px solid var(--line);padding:14px 0;display:flex;justify-content:space-between;gap:12px;align-items:center}.content-row h3{font-size:14px;margin:0 0 4px}.content-row .meta{max-width:560px;overflow-wrap:anywhere}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.intro{display:block}.stats{flex-wrap:wrap}.resource{align-items:flex-start;flex-direction:column}.resource-actions{justify-content:flex-start}.row{grid-template-columns:1fr 1fr}}
 
-@media(max-width:800px){
-  html,body{width:100%;max-width:100%;overflow-x:hidden}
-  main{width:100%;max-width:100%;margin:16px auto;padding:0 12px}
-  .grid,.grid[style*="grid-template-columns"]{grid-template-columns:minmax(0,1fr)!important;width:100%;min-width:0}
-  .panel{width:100%;min-width:0;padding:17px;border-radius:15px}
-  .intro{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-  .intro h1{font-size:27px}
-  .intro h2{font-size:19px}
-  .stats{flex-wrap:wrap}
-  .stat{flex:1 1 90px;min-width:0}
-  .resource,.content-row{align-items:stretch;flex-direction:column;gap:10px;min-width:0}
-  .resource-actions{justify-content:flex-start}
-  .content-row>div{min-width:0;max-width:100%;overflow-wrap:anywhere}
-  .row{grid-template-columns:minmax(0,1fr);gap:0}
-  input,select,textarea{max-width:100%;font-size:16px}
-  input[type=file]{font-size:14px}
-  .actions>.btn{width:100%}
-  #knowledgeBasePanel .grid{grid-template-columns:minmax(0,1fr)!important}
-  #knowledgeBasePanel .content-row{padding:14px 0}
-  #knowledgeBasePanel .resource-actions{display:flex;flex-wrap:wrap}
-  #knowledgeBasePanel .resource-actions .btn{flex:1 1 auto}
-  #siteContentPanel .grid{grid-template-columns:minmax(0,1fr)!important}
+/* Refined admin layout */
+html{overflow-x:hidden;scroll-behavior:smooth}
+body{overflow-x:hidden;background:#f4f6f2}
+header{position:sticky;top:0;z-index:20;min-height:66px;padding:14px max(18px,calc((100% - 1180px)/2));box-shadow:0 4px 18px #102c2012}
+.brand{font-size:21px}
+main{width:min(1180px,100%);margin:28px auto 56px;padding:0 20px}
+.intro{align-items:flex-start;margin-bottom:20px}
+.intro h1{letter-spacing:-1.3px;font-weight:850}
+.panel{border-radius:20px;padding:22px;box-shadow:0 8px 28px #173d2810}
+.panel h2{letter-spacing:-.35px}
+input,select,textarea{border-color:#dce5de;border-radius:12px;transition:border-color .18s,box-shadow .18s}
+input:focus,select:focus,textarea:focus{outline:0;border-color:#43856a;box-shadow:0 0 0 3px #14533e16}
+.btn{border-radius:999px;min-height:42px;transition:transform .15s,filter .15s}
+.btn:active{transform:scale(.98)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.stat{border:1px solid #dce9df;border-radius:16px;padding:14px 16px;min-width:0}
+.stat b{font-size:26px;line-height:1.1}
+.content-manager-grid{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:22px;align-items:start;margin-top:14px}
+.content-manager-grid>div{min-width:0}
+#siteContentPanel{margin-top:22px!important;padding:24px}
+#siteContentPanel>h2{font-size:22px}
+#contentForm{background:#f8faf8;border:1px solid #e7eee8;border-radius:16px;padding:16px}
+#contentForm label{margin-top:12px}
+#contentBody{min-height:150px!important}
+#contentList{min-width:0}
+#contentList .content-row{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;padding:17px 0;border-top:1px solid #e9eee9;align-items:start}
+#contentList .content-row:first-child{border-top:0}
+.content-row>div:first-child{min-width:0}
+.content-row h3{font-size:16px;line-height:1.35;letter-spacing:-.2px;overflow-wrap:anywhere}
+.content-row .meta{max-width:100%;overflow-wrap:anywhere}
+.content-preview{color:#66736c;font-size:13px;line-height:1.5;margin:8px 0 0;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;overflow-wrap:anywhere}
+#contentList .resource-actions{justify-content:flex-start;gap:8px}
+#contentList .resource-actions .btn{min-height:36px}
+.toolbar{align-items:center}
+.toolbar input{min-width:0;flex:1 1 180px}
+.toolbar select{flex:0 1 170px;max-width:100%!important}
+.resource{min-width:0;align-items:flex-start}
+.resource>div:first-child{min-width:0;overflow-wrap:anywhere}
+.resource h3{overflow-wrap:anywhere}
+@media(max-width:900px){
+ .grid,.content-manager-grid{grid-template-columns:minmax(0,1fr)!important}
+ .content-manager-grid{gap:18px}
+ #siteContentPanel{padding:18px}
+ #contentForm{padding:15px}
 }
-@media(min-width:481px) and (max-width:800px){
-  .row{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:600px){
+ header{min-height:60px;padding:12px 16px;gap:8px}
+ .brand{font-size:19px;white-space:nowrap}
+ .header-right{gap:7px;min-width:0}
+ #who{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ main{margin:20px auto 40px;padding:0 13px}
+ .intro{margin-bottom:16px}
+ .intro h1{font-size:29px;line-height:1.08}
+ .sub{font-size:13px;line-height:1.5}
+ .panel{padding:16px;border-radius:17px}
+ .panel h2{font-size:18px}
+ .hint{font-size:12px;margin-bottom:14px}
+ .stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:14px 0}
+ .stat{padding:10px 9px;border-radius:13px}
+ .stat b{font-size:22px}
+ .stat span{font-size:9px;line-height:1.2;display:block}
+ .row{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px}
+ label{font-size:12px}
+ input,select,textarea{font-size:16px;padding:11px 12px}
+ input[type=file]{font-size:12px}
+ .actions{gap:8px}
+ .actions .btn{flex:1 1 auto}
+ .toolbar{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+ .toolbar input,.toolbar select{width:100%;max-width:none!important}
+ .resource{display:block;padding:14px 0}
+ .resource-actions{justify-content:flex-start;margin-top:11px}
+ .resource-actions .btn{flex:1 1 auto}
+ #siteContentPanel{margin-top:16px!important;padding:15px}
+ #siteContentPanel>h2{font-size:19px}
+ #contentForm{padding:12px;border-radius:13px}
+ .content-manager-grid{gap:16px}
+ #contentList .content-row{padding:14px 0;gap:9px}
+ .content-row h3{font-size:15px}
+ .content-preview{font-size:12px;-webkit-line-clamp:3}
+ #contentList .resource-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ #contentList .resource-actions .btn{padding:8px 5px;font-size:11px;min-width:0}
+ #login,#passwordReset{width:calc(100% - 26px);margin:8vh auto;padding:22px}
+}
+@media(max-width:360px){
+ .row{grid-template-columns:1fr}
+ .stats{grid-template-columns:1fr 1fr}
+ #contentList .resource-actions{grid-template-columns:1fr 1fr}
+}
+
+/* Content editor first; saved content list underneath, never beside it */
+.content-manager-grid{display:block!important;width:100%;max-width:100%;margin-top:14px}
+.content-manager-grid>div{width:100%;max-width:100%;min-width:0}
+#contentForm{width:100%;max-width:100%}
+.content-library-section{display:block;width:100%;max-width:100%;min-width:0;margin-top:26px;padding-top:22px;border-top:1px solid var(--line)}
+.content-library-title{margin:0 0 14px;font-size:18px;font-weight:800;letter-spacing:-.25px}
+.content-library-section .toolbar{display:flex;flex-wrap:wrap;gap:10px;width:100%;margin-bottom:12px}
+.content-library-section .toolbar input{flex:1 1 220px;min-width:0}
+.content-library-section .toolbar select{flex:0 1 190px;min-width:0}
+#contentList{display:block;width:100%;max-width:100%;min-width:0;overflow:hidden}
+#contentList .content-row{display:flex;flex-direction:column;align-items:stretch;width:100%;max-width:100%;min-width:0;gap:10px;padding:17px 0;border-top:1px solid var(--line)}
+#contentList .content-row>div{width:100%;max-width:100%;min-width:0}
+#contentList .content-row h3,#contentList .content-row .meta,#contentList .content-row .content-preview{max-width:100%;overflow-wrap:anywhere}
+#contentList .content-preview{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+#contentList .resource-actions{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:8px}
+@media(max-width:700px){
+ #siteContentPanel{padding:18px}
+ .content-library-section{margin-top:22px;padding-top:18px}
+ .content-library-section .toolbar{display:grid;grid-template-columns:minmax(0,1fr);gap:9px}
+ .content-library-section .toolbar input,.content-library-section .toolbar select{width:100%;max-width:100%!important}
+ #contentList .content-row{padding:15px 0}
+}
+
+
+/* Mwalimu admin responsive correction: Android browsers may use a wide layout viewport */
+@media screen and (max-width: 1100px) {
+  html, body { width:100% !important; max-width:100% !important; overflow-x:hidden !important; }
+  main { width:100% !important; max-width:100% !important; padding:0 14px !important; margin:18px auto !important; }
+  main > .grid,
+  #siteContentPanel > .grid,
+  #knowledgeBasePanel > .grid,
+  .grid[style*="grid-template-columns"] {
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) !important;
+    width:100% !important; min-width:0 !important; gap:16px !important;
+  }
+  #siteContentPanel, #knowledgeBasePanel,
+  #siteContentPanel > .grid > div, #knowledgeBasePanel > .grid > div,
+  #contentForm, #kbForm, #contentList, #kbList {
+    width:100% !important; max-width:100% !important; min-width:0 !important;
+  }
+  .panel { min-width:0 !important; padding:18px !important; }
+  .content-row, .resource {
+    display:flex !important; flex-direction:column !important; align-items:stretch !important;
+    width:100% !important; min-width:0 !important; gap:10px !important;
+  }
+  .content-row > *, .resource > *, .resource-actions {
+    width:100% !important; max-width:100% !important; min-width:0 !important;
+    overflow-wrap:anywhere !important;
+  }
+  .resource-actions { display:flex !important; flex-wrap:wrap !important; justify-content:flex-start !important; }
+  .toolbar { width:100% !important; min-width:0 !important; }
+  .toolbar input { min-width:0 !important; width:100% !important; }
+  input, select, textarea {
+    width:100% !important; max-width:100% !important; min-width:0 !important; font-size:16px !important;
+  }
+  .actions { width:100% !important; }
+  .actions .btn { max-width:100% !important; }
+}
+@media screen and (max-width:520px) {
+  .row { grid-template-columns:minmax(0,1fr) !important; gap:0 !important; }
+  header { padding:12px 14px !important; flex-wrap:wrap !important; }
+  .header-right { gap:7px !important; }
+  .stats { display:grid !important; grid-template-columns:repeat(3,minmax(0,1fr)) !important; gap:7px !important; }
+  .stat { min-width:0 !important; padding:9px !important; }
+  .stat span { font-size:9px !important; }
+  #siteContentPanel .intro, #knowledgeBasePanel .intro { align-items:flex-start !important; }
 }
 
 </style>
@@ -100,7 +230,7 @@ label{display:block;font-weight:750;font-size:12px;margin:13px 0 6px}input,selec
  </div>
   <section class="panel" style="margin-top:22px" id="siteContentPanel">
    <h2>Website content management</h2><p class="hint">Manage updates, homepage slides, jobs, Academy courses and community messages. The public pages must be connected to this table before published content appears live.</p>
-   <div class="grid" style="grid-template-columns:minmax(260px,.85fr) minmax(0,1.5fr)">
+   <div class="content-manager-grid">
     <div><form id="contentForm"><input type="hidden" id="contentId">
      <label>Content section *</label><select id="contentType" required><option value="update">Mwalimu updates / articles</option><option value="hero">Homepage hero slides</option><option value="ai">Mwalimu AI slides</option><option value="job">Mwalimu jobs</option><option value="academy">Mwalimu Academy courses</option><option value="community">Mwalimu community</option><option value="site_text">Other section text</option></select>
      <label>Title / heading *</label><input id="contentTitle" maxlength="180" required>
@@ -111,43 +241,13 @@ label{display:block;font-weight:750;font-size:12px;margin:13px 0 6px}input,selec
      <div class="row"><div><label>Display order</label><input id="contentOrder" type="number" min="0" value="0"></div><div><label>Status</label><select id="contentPublished"><option value="false">Draft</option><option value="true">Published</option></select></div></div>
      <div class="actions"><button class="btn" id="contentSaveBtn" type="submit">Save content</button><button class="btn secondary" id="contentCancelBtn" type="button" hidden>Cancel edit</button></div><p id="contentStatus" class="status" role="status"></p>
     </form></div>
-    <div><div class="toolbar"><input id="contentSearch" placeholder="Search website content…"><select id="contentFilter" style="max-width:190px"><option value="">All sections</option><option value="update">Updates</option><option value="hero">Hero slides</option><option value="ai">Mwalimu AI</option><option value="job">Jobs</option><option value="academy">Academy</option><option value="community">Community</option><option value="site_text">Other text</option></select></div><div id="contentList"><div class="empty">Loading website content…</div></div></div>
+   </div>
+   <div class="content-library-section">
+    <h3 class="content-library-title">Existing website content</h3>
+    <div class="toolbar"><input id="contentSearch" placeholder="Search website content…"><select id="contentFilter" style="max-width:190px"><option value="">All sections</option><option value="update">Updates</option><option value="hero">Hero slides</option><option value="ai">Mwalimu AI</option><option value="job">Jobs</option><option value="academy">Academy</option><option value="community">Community</option><option value="site_text">Other text</option></select></div>
+    <div id="contentList"><div class="empty">Loading website content…</div></div>
    </div>
   </section>
-
-  <section class="panel" id="knowledgeBasePanel" style="margin-top:22px">
-   <div class="intro" style="margin-bottom:8px">
-    <div><div class="eyebrow">Mwalimu AI · RAG</div><h2>Knowledge Base</h2></div>
-    <button class="btn secondary small" type="button" id="kbRefresh">Refresh</button>
-   </div>
-   <p class="hint">Upload curriculum and teaching documents for Mwalimu AI to search when answering questions. This is separate from the public Resource Library.</p>
-   <div class="grid" style="grid-template-columns:minmax(260px,.85fr) minmax(0,1.5fr)">
-    <div>
-     <form id="kbForm">
-      <label>Document title *</label><input id="kbTitle" maxlength="180" required placeholder="e.g. NCDC A-level Chemistry syllabus">
-      <label>Choose document *</label><input id="kbFile" type="file" accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" required>
-      <div class="file-note">PDF, DOCX or TXT. Maximum 50 MB. Scanned PDFs need OCR before indexing.</div>
-      <div class="row">
-       <div><label>Education level *</label><select id="kbLevel" required><option value="secondary">Secondary</option><option value="primary">Primary</option><option value="general">General</option></select></div>
-       <div><label>Subject</label><select id="kbSubject"><option value="">All / unspecified</option><option>Biology</option><option>Chemistry</option><option>Physics</option><option>Mathematics</option><option>English</option><option>Geography</option><option>History</option><option>ICT</option><option>Science</option><option>Social Studies</option><option>Other</option></select></div>
-      </div>
-      <div class="row">
-       <div><label>Class / level detail</label><input id="kbClass" placeholder="e.g. S1–S4, S5–S6"></div>
-       <div><label>Curriculum version</label><input id="kbCurriculum" placeholder="e.g. NCDC 2025"></div>
-      </div>
-      <label>Document type</label><select id="kbType"><option value="syllabus">Curriculum / syllabus</option><option value="teacher_guide">Teaching guide</option><option value="uneb_material">UNEB material</option><option value="textbook">Textbook</option><option value="notes">Notes / learning material</option><option value="other">Other</option></select>
-      <label>Description (optional)</label><textarea id="kbDescription" maxlength="800" placeholder="What does this document cover?"></textarea>
-      <div class="actions"><button class="btn" id="kbUploadBtn" type="submit">Upload &amp; process document</button></div>
-      <p id="kbStatus" class="status" role="status" aria-live="polite"></p>
-     </form>
-    </div>
-    <div>
-     <div id="kbStats" class="hint">Knowledge documents will appear here.</div>
-     <div id="kbList"><div class="empty">Loading knowledge base…</div></div>
-    </div>
-   </div>
-  </section>
-
 </main>
 <script>
 const SUPABASE_URL="https://ilzbxafrtxfurccqdpub.supabase.co";
@@ -252,7 +352,7 @@ await loadResources()
   const q=$("contentSearch").value.toLowerCase().trim(),type=$("contentFilter").value;
   const rows=siteContent.filter(x=>(!type||x.content_type===type)&&(!q||[x.title,x.summary,x.body,x.content_type].join(" ").toLowerCase().includes(q)));
   if(!rows.length){$("contentList").innerHTML='<div class="empty">No website content found. Add your first item using the form.</div>';return}
-  $("contentList").innerHTML=rows.map(x=>`<article class="content-row"><div><h3>${esc(x.title)}</h3><div class="meta">${esc(contentTypes[x.content_type]||x.content_type)} · Order ${Number(x.sort_order)||0}</div><span class="pill ${x.is_published?"live":"draft"}">${x.is_published?"PUBLISHED":"DRAFT"}</span>${x.summary?`<div class="meta">${esc(x.summary)}</div>`:""}</div><div class="resource-actions"><button class="btn secondary small" data-content-action="edit" data-id="${x.id}">Edit</button><button class="btn small" data-content-action="toggle" data-id="${x.id}">${x.is_published?"Unpublish":"Publish"}</button><button class="btn danger small" data-content-action="delete" data-id="${x.id}">Delete</button></div></article>`).join("");
+  $("contentList").innerHTML=rows.map(x=>`<article class="content-row"><div><h3>${esc(x.title)}</h3><div class="meta">${esc(contentTypes[x.content_type]||x.content_type)} · Order ${Number(x.sort_order)||0}</div><span class="pill ${x.is_published?"live":"draft"}">${x.is_published?"PUBLISHED":"DRAFT"}</span>${x.summary?`<p class="content-preview">${esc(x.summary)}</p>`:""}</div><div class="resource-actions"><button class="btn secondary small" data-content-action="edit" data-id="${x.id}">Edit</button><button class="btn small" data-content-action="toggle" data-id="${x.id}">${x.is_published?"Unpublish":"Publish"}</button><button class="btn danger small" data-content-action="delete" data-id="${x.id}">Delete</button></div></article>`).join("");
  }
  async function loadSiteContent(){
   const {data,error}=await db.from("mwalimu_site_content").select("*").order("sort_order",{ascending:true}).order("created_at",{ascending:false});
@@ -278,175 +378,6 @@ await loadResources()
   }catch(err){alert(err.message||"Could not complete the action.")}finally{b.disabled=false}
  });
  const previousShowApp=showApp;showApp=function(){previousShowApp();loadSiteContent()};
-
-// ---------------- Mwalimu AI Knowledge Base ----------------
-let kbDocuments = [];
-const kbBucket = "mwalimu-ai-knowledge";
-const kbEsc = value => String(value ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
-
-async function extractKnowledgeText(file) {
-  const ext = (file.name.split(".").pop() || "").toLowerCase();
-  if (ext === "txt") return await file.text();
-  if (ext === "docx") {
-    if (!window.mammoth) throw new Error("DOCX text extraction did not load. Check your connection and refresh.");
-    const result = await window.mammoth.extractRawText({arrayBuffer: await file.arrayBuffer()});
-    return result.value || "";
-  }
-  if (ext === "pdf") {
-    if (!window.pdfjsLib) throw new Error("PDF text extraction did not load. Check your connection and refresh.");
-    window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-    const pdf = await window.pdfjsLib.getDocument({data: await file.arrayBuffer()}).promise;
-    const pages = [];
-    for (let n = 1; n <= pdf.numPages; n++) {
-      const page = await pdf.getPage(n);
-      const content = await page.getTextContent();
-      pages.push(`[Page ${n}]\n${content.items.map(x => x.str || "").filter(Boolean).join(" ")}`);
-    }
-    return pages.join("\n\n");
-  }
-  throw new Error("Unsupported file. Please choose a PDF, DOCX or TXT document.");
-}
-
-function renderKnowledgeList() {
-  $("kbStats").textContent = `${kbDocuments.length} document(s) · ${kbDocuments.filter(x => x.processing_status === "ready").length} processed and ready`;
-  if (!kbDocuments.length) {
-    $("kbList").innerHTML = '<div class="empty">No knowledge documents yet. Upload the first curriculum document using the form.</div>';
-    return;
-  }
-  $("kbList").innerHTML = kbDocuments.map(doc => `
-   <article class="content-row">
-    <div>
-     <h3>${kbEsc(doc.title)}</h3>
-     <div class="meta">${kbEsc(doc.subject || "All subjects")} · ${kbEsc(doc.level || "Unspecified")} · ${kbEsc(doc.document_type || "Document")}</div>
-     <div class="meta">${kbEsc(doc.file_name || "")}${doc.curriculum_version ? " · " + kbEsc(doc.curriculum_version) : ""}</div>
-     <span class="pill ${doc.processing_status === "ready" ? "live" : "draft"}">${kbEsc((doc.processing_status || "pending").toUpperCase())}</span>
-     <span class="pill ${doc.is_active ? "live" : "draft"}">${doc.is_active ? "ACTIVE" : "INACTIVE"}</span>
-    </div>
-    <div class="resource-actions">
-     <button class="btn secondary small" data-kb-action="toggle" data-id="${doc.id}">${doc.is_active ? "Deactivate" : "Activate"}</button>
-     <button class="btn danger small" data-kb-action="delete" data-id="${doc.id}">Delete</button>
-    </div>
-   </article>`).join("");
-}
-
-async function loadKnowledgeDocuments() {
-  const {data, error} = await db.from("ai_knowledge_documents")
-    .select("id,title,description,subject,level,file_path,file_name,mime_type,is_active,curriculum_version,document_type,processing_status,last_processed_at,created_at")
-    .order("created_at", {ascending:false});
-  if (error) {
-    $("kbList").innerHTML = `<div class="empty">Could not load Knowledge Base: ${kbEsc(error.message)}</div>`;
-    $("kbStats").textContent = "Database connection needs attention.";
-    return;
-  }
-  kbDocuments = data || [];
-  renderKnowledgeList();
-}
-
-$("kbRefresh").addEventListener("click", loadKnowledgeDocuments);
-
-$("kbForm").addEventListener("submit", async event => {
-  event.preventDefault();
-  const button = $("kbUploadBtn");
-  const file = $("kbFile").files[0];
-  if (!file) return;
-  if (file.size > 50 * 1024 * 1024) {
-    setStatus("kbStatus", "This file exceeds the 50 MB storage limit.", true);
-    return;
-  }
-  button.disabled = true;
-  let uploadedPath = null;
-  let insertedId = null;
-  try {
-    setStatus("kbStatus", "Extracting text from the document…");
-    const extractedText = (await extractKnowledgeText(file)).trim();
-    if (!extractedText) throw new Error("No selectable text was found. Scanned PDFs need OCR before upload.");
-    if (extractedText.length > 180000) throw new Error(`This document has ${extractedText.length.toLocaleString()} characters. The current processing limit is 180,000; split it into smaller documents.`);
-
-    const safeName = file.name.replace(/[^a-zA-Z0-9._-]+/g, "_");
-    uploadedPath = `${user.id}/${crypto.randomUUID()}-${safeName}`;
-    setStatus("kbStatus", "Uploading the original file to the private Knowledge Base storage…");
-    const upload = await db.storage.from(kbBucket).upload(uploadedPath, file, {contentType:file.type || "application/octet-stream", upsert:false});
-    if (upload.error) throw upload.error;
-
-    setStatus("kbStatus", "Saving document details…");
-    const payload = {
-      title: $("kbTitle").value.trim(),
-      description: $("kbDescription").value.trim() || null,
-      subject: $("kbSubject").value || null,
-      level: $("kbLevel").value,
-      file_path: uploadedPath,
-      file_name: file.name,
-      mime_type: file.type || null,
-      is_active: true,
-      uploaded_by: user.id,
-      curriculum_version: $("kbCurriculum").value.trim() || null,
-      document_type: $("kbType").value,
-      metadata: {class_level:$("kbClass").value.trim() || null, extracted_characters:extractedText.length},
-      processing_status: "pending"
-    };
-    const inserted = await db.from("ai_knowledge_documents").insert(payload).select("id").single();
-    if (inserted.error) throw inserted.error;
-    insertedId = inserted.data.id;
-
-    setStatus("kbStatus", "Generating searchable chunks and embeddings. Keep this page open…");
-    const {data: processed, error: processError} = await db.functions.invoke("mwalimu-ai-ingest", {
-      body: {document_id: insertedId, text: extractedText}
-    });
-    if (processError) throw processError;
-    if (processed?.error) throw new Error(processed.error);
-
-    $("kbForm").reset();
-    setStatus("kbStatus", `Success. ${processed.chunks_created || 0} searchable chunks created.`);
-    await loadKnowledgeDocuments();
-  } catch (error) {
-    if (insertedId) {
-      await db.from("ai_knowledge_documents").update({processing_status:"failed"}).eq("id", insertedId);
-    } else if (uploadedPath) {
-      await db.storage.from(kbBucket).remove([uploadedPath]);
-    }
-    setStatus("kbStatus", error.message || "Could not upload or process this document.", true);
-    await loadKnowledgeDocuments();
-  } finally {
-    button.disabled = false;
-  }
-});
-
-$("kbList").addEventListener("click", async event => {
-  const button = event.target.closest("button[data-kb-action]");
-  if (!button) return;
-  const doc = kbDocuments.find(x => x.id === button.dataset.id);
-  if (!doc) return;
-  button.disabled = true;
-  try {
-    if (button.dataset.kbAction === "toggle") {
-      const {error} = await db.from("ai_knowledge_documents")
-        .update({is_active:!doc.is_active, updated_at:new Date().toISOString()}).eq("id", doc.id);
-      if (error) throw error;
-    } else if (button.dataset.kbAction === "delete") {
-      if (!confirm(`Delete "${doc.title}" and its indexed chunks? This cannot be undone.`)) return;
-      const {error} = await db.from("ai_knowledge_documents").delete().eq("id", doc.id);
-      if (error) throw error;
-      const {error: storageError} = await db.storage.from(kbBucket).remove([doc.file_path]);
-      if (storageError) console.warn("Document record deleted, but its stored file could not be removed:", storageError.message);
-    }
-    await loadKnowledgeDocuments();
-  } catch (error) {
-    alert(error.message || "Could not update the Knowledge Base document.");
-  } finally {
-    button.disabled = false;
-  }
-});
-
-// The deployed /admin route serves mwalimu-admin-content-manager.html.
-// Load Knowledge Base only after the existing admin authentication succeeds.
-const existingShowAppForKB = showApp;
-showApp = function() {
-  existingShowAppForKB();
-  loadSiteContent();
-  loadKnowledgeDocuments();
-};
-// ------------------------------------------------------------
-
  checkSession();
 
 </script>
