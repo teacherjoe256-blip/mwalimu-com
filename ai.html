@@ -526,6 +526,26 @@
       main#homePage > section:not(#mwalimu-ai) { display:none !important; }
       #mwalimu-ai { display:block !important; }
     
+    /* Single Mwalimu AI landing hero: no carousel or slide controls. */
+    body.page-ai #mwalimu-ai { padding: 24px 0 44px; }
+    .mwalimu-ai-hero { height: min(650px, calc(100svh - 150px)); min-height: 470px; }
+    .mwalimu-ai-hero .ai-hero-art { position:absolute; inset:0; overflow:hidden; background:#071c18; }
+    .mwalimu-ai-hero .ai-hero-art svg { width:100%; height:100%; object-fit:cover; }
+    .mwalimu-ai-hero:after { background:linear-gradient(90deg,rgba(5,24,19,.88) 0%,rgba(5,24,19,.66) 42%,rgba(5,24,19,.12) 100%),linear-gradient(0deg,rgba(5,24,19,.32),transparent 55%); }
+    .mwalimu-ai-hero .feature-content { position:absolute; inset:0; justify-content:center; max-width:790px; padding:clamp(28px,6vw,76px); }
+    .mwalimu-ai-hero .feature-content h1 { font-size:clamp(38px,5.2vw,68px); max-width:700px; }
+    .mwalimu-ai-hero .feature-content p { max-width:560px; font-size:clamp(14px,1.4vw,17px); line-height:1.7; }
+    .mwalimu-ai-hero .feature-cta { margin-top:22px; padding:14px 20px; border:1px solid rgba(255,255,255,.65); border-radius:999px; background:#dcebe1; color:#183729; }
+    .mwalimu-ai-hero .feature-cta:hover { background:#fff; transform:translateY(-2px); }
+    @media(max-width:600px) {
+      body.page-ai #mwalimu-ai { padding:14px 0 30px; }
+      .mwalimu-ai-hero { height:calc(100svh - 125px); min-height:510px; max-height:700px; border-radius:22px; }
+      .mwalimu-ai-hero .ai-hero-art svg { width:auto; min-width:100%; height:100%; transform:translateX(-25%); }
+      .mwalimu-ai-hero:after { background:linear-gradient(90deg,rgba(5,24,19,.82),rgba(5,24,19,.36)),linear-gradient(0deg,rgba(5,24,19,.5),transparent 75%); }
+      .mwalimu-ai-hero .feature-content { padding:28px 24px 36px; }
+      .mwalimu-ai-hero .feature-content h1 { font-size:clamp(37px,10vw,48px); }
+      .mwalimu-ai-hero .feature-content p { font-size:14px; }
+    }
   </style>
 <style id="mwalimu-footer-styles">.mw-footer{margin-top:64px;background:#183729;color:#edf5ee;padding:48px 0 18px;font-family:inherit}.mw-footer-inner{width:min(1160px,calc(100% - 40px));margin:0 auto;display:grid;grid-template-columns:1.5fr 1fr 1fr 1.25fr;gap:34px}.mw-footer-logo{font-size:25px;font-weight:800;letter-spacing:-.04em;color:#fff}.mw-footer-logo span{color:#d9ad58}.mw-footer-brand p{max-width:340px;color:#d4e1d8;line-height:1.7;font-size:14px}.mw-footer-community{display:inline-block;margin-top:8px;color:#f0d59d;font-weight:700;font-size:14px}.mw-footer-col{display:flex;flex-direction:column;align-items:flex-start;gap:10px}.mw-footer-col h2{font-size:14px;text-transform:uppercase;letter-spacing:.08em;color:#d9ad58;margin:2px 0 7px}.mw-footer-col a{font-size:14px;color:#e1ebe4;text-decoration:none}.mw-footer-col a:hover,.mw-footer-community:hover{color:#fff;text-decoration:underline}.mw-footer-bottom{width:min(1160px,calc(100% - 40px));margin:34px auto 0;padding-top:16px;border-top:1px solid rgba(255,255,255,.16);display:flex;justify-content:space-between;gap:16px;color:#c6d6cc;font-size:13px}.mw-page{width:min(1000px,calc(100% - 40px));margin:48px auto 64px}.mw-page .eyebrow{color:#537763;font-weight:800;text-transform:uppercase;letter-spacing:.1em;font-size:12px}.mw-page h1{font-size:clamp(32px,5vw,52px);line-height:1.12;color:#183729;margin:10px 0 18px;letter-spacing:-.04em}.mw-page h2{color:#244c3b;margin:28px 0 8px}.mw-page p,.mw-page li{line-height:1.75;color:#42534a}.mw-page .mw-panel{background:#fffdf7;border:1px solid #e5e7df;border-radius:20px;padding:24px;margin:22px 0;box-shadow:0 12px 30px rgba(27,57,42,.06)}.mw-button{display:inline-flex;align-items:center;justify-content:center;background:#244c3b;color:#fff!important;padding:13px 20px;border-radius:999px;font-weight:750;margin:8px 8px 8px 0}.mw-button.secondary{background:#dcebe1;color:#183729!important}.mw-contact-list{display:grid;gap:12px}.mw-contact-list a{color:#244c3b;font-weight:700;overflow-wrap:anywhere}@media(max-width:850px){.mw-footer-inner{grid-template-columns:1fr 1fr;gap:28px}}@media(max-width:540px){.mw-footer-inner{grid-template-columns:1fr;gap:24px}.mw-footer-bottom{flex-direction:column;gap:6px}.mw-footer{padding-top:36px}}</style>
 </head>
@@ -578,16 +598,53 @@
     </div>
   </section>
 
-  <section class="ai-section wrap" id="mwalimu-ai">
-    <div class="section-heading"><span class="eyebrow">Mwalimu AI</span><h2>Meet Mwalimu AI</h2></div>
-    <div class="carousel-shell image-story-carousel" data-carousel data-interval="5000" aria-roledescription="carousel">
-      <div class="carousel-track">
-        <article class="feature-card carousel-slide is-active"><img src="https://www.unicef.org/uganda/sites/unicef.org.uganda/files/styles/open_graph_image/public/UNI775695.JPG.jpeg?itok=EvbNsJKy" alt="A Ugandan teacher guiding pupils during a classroom lesson"><div class="feature-content"><span class="tag">Mwalimu AI · Lesson planning</span><h2>Plan lessons with a clearer starting point.</h2><p>Turn your lesson objectives into organised plans and classroom-ready activities.</p></div></article>
-        <article class="feature-card carousel-slide"><img src="https://sdgs.un.org/sites/default/files/partnerships/353cf6c5992b8b5829e45ac577c44032africa%20-%20ug%20-%20teacher%20noreen.jpg" alt="A Ugandan teacher leading a classroom discussion"><div class="feature-content"><span class="tag">Mwalimu AI · Explain concepts</span><h2>Make difficult topics easier to explain.</h2><p>Get help breaking down complex ideas into clear, learner-friendly explanations.</p></div></article>
-        <article class="feature-card carousel-slide"><img src="https://back.avsi.org/uploads/AVSI_uganda-6.jpg" alt="A Ugandan teacher supporting learners in class"><div class="feature-content"><span class="tag">Mwalimu AI · Questions & activities</span><h2>Create questions and activities for your class.</h2><p>Prepare practice questions, examples and learning activities with less effort.</p></div></article>
-        <article class="feature-card carousel-slide"><img src="https://edukid.org.uk/app/uploads/2025/05/DSC01412-1-scaled.jpg" alt="African pupils taking part in a classroom activity"><div class="feature-content"><span class="tag">More time for what matters</span><h2>Less time struggling with preparation. More time teaching.</h2><p>Let Mwalimu AI support the everyday work behind great teaching.</p><a class="feature-cta" href="/ai.html">Visit Mwalimu AI <span>→</span></a></div></article>
-      </div><div class="carousel-dots" aria-label="Mwalimu AI features"></div>
-    </div>
+  <section class="ai-section wrap" id="mwalimu-ai" aria-label="Mwalimu AI">
+    <article class="feature-card mwalimu-ai-hero">
+      <div class="ai-hero-art" role="img" aria-label="A futuristic glowing artificial intelligence network with connected nodes and a digital brain">
+        <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <radialGradient id="aiGlow" cx="68%" cy="42%" r="58%"><stop offset="0" stop-color="#3c9b80" stop-opacity=".58"/><stop offset=".48" stop-color="#1c5b4a" stop-opacity=".28"/><stop offset="1" stop-color="#071c18" stop-opacity="0"/></radialGradient>
+            <linearGradient id="aiCore" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c7f8e2"/><stop offset=".5" stop-color="#58c9a5"/><stop offset="1" stop-color="#d9ad58"/></linearGradient>
+            <filter id="aiBlur"><feGaussianBlur stdDeviation="18"/></filter>
+            <filter id="aiSoft"><feGaussianBlur stdDeviation="4"/></filter>
+          </defs>
+          <rect width="1600" height="900" fill="#071c18"/>
+          <rect width="1600" height="900" fill="url(#aiGlow)"/>
+          <g opacity=".18" stroke="#8de4c1" stroke-width="1">
+            <path d="M0 150H1600M0 300H1600M0 450H1600M0 600H1600M0 750H1600M200 0V900M400 0V900M600 0V900M800 0V900M1000 0V900M1200 0V900M1400 0V900"/>
+          </g>
+          <g transform="translate(1080 420)" fill="none" stroke="#73d9b4">
+            <circle r="255" stroke-width="2" opacity=".28"/><circle r="205" stroke-width="2" stroke-dasharray="8 15" opacity=".55"/>
+            <circle r="155" stroke-width="3" opacity=".65"/><ellipse rx="255" ry="105" transform="rotate(-35)" stroke-width="2" opacity=".5"/>
+            <ellipse rx="255" ry="105" transform="rotate(48)" stroke-width="2" opacity=".5"/>
+            <path d="M-310 0H310M0-310V310M-220-220L220 220M-220 220L220-220" opacity=".25"/>
+            <circle r="92" fill="#54bd99" fill-opacity=".12" stroke="url(#aiCore)" stroke-width="3"/>
+            <circle r="68" fill="#baf4d9" fill-opacity=".10" stroke="#baf4d9" stroke-width="2"/>
+            <path d="M-40-18Q-57-58-24-67Q-4-87 15-65Q49-72 48-39Q72-17 48 4Q61 37 26 47Q10 73-15 50Q-50 56-48 25Q-69 1-40-18Z" stroke="url(#aiCore)" stroke-width="5" stroke-linejoin="round"/>
+            <path d="M0-63V58M-43-22L-4-4L-34 24M43-22L4-4L34 24M-4-4L-25-45M4-4L25-45" stroke="#d6ffec" stroke-width="3" opacity=".9"/>
+          </g>
+          <g fill="#baf4d9">
+            <circle cx="1080" cy="165" r="7"/><circle cx="1350" cy="310" r="6"/><circle cx="830" cy="270" r="5"/>
+            <circle cx="1310" cy="650" r="8"/><circle cx="900" cy="650" r="5"/><circle cx="1480" cy="500" r="4"/>
+            <circle cx="700" cy="440" r="6"/><circle cx="1170" cy="780" r="4"/>
+          </g>
+          <g stroke="#8de4c1" stroke-width="2" opacity=".55" fill="none">
+            <path d="M1080 165L1350 310L1480 500L1310 650L1170 780L900 650L700 440L830 270Z"/>
+            <path d="M830 270L1080 420L1350 310M700 440L1080 420L1310 650M900 650L1080 420L1170 780"/>
+          </g>
+          <circle cx="1080" cy="420" r="135" fill="#66d9ad" opacity=".18" filter="url(#aiBlur)"/>
+          <g fill="#e2fff1" font-family="Arial,sans-serif" font-size="18" letter-spacing="5" opacity=".55">
+            <text x="820" y="100">LEARNING INTELLIGENCE</text><text x="1280" y="830">MWALIMU / AI</text>
+          </g>
+        </svg>
+      </div>
+      <div class="feature-content">
+        <span class="tag">Introducing Mwalimu AI</span>
+        <h1>Your teaching partner, powered by AI.</h1>
+        <p>Plan lessons, simplify difficult concepts and create classroom resources with an AI assistant built to support teachers.</p>
+        <a class="feature-cta mwalimu-ai-cta" href="#mwalimu-ai">Visit Mwalimu AI <span aria-hidden="true">→</span></a>
+      </div>
+    </article>
   </section>
 
   <section class="content-section resources-section" id="resources">

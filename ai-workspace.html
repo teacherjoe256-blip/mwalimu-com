@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#212121">
+<title>Mwalimu AI | Your Teaching Assistant</title>
+<meta name="description" content="Mwalimu AI — an AI teaching assistant built for Ugandan teachers.">
+<style>
+:root{--bg:#212121;--panel:#2b2b2b;--panel2:#303030;--line:#414141;--text:#ececec;--muted:#a5a5a5;--green:#8fc5a2;--green-dark:#315d45;--white:#fff}
+*{box-sizing:border-box}html,body{height:100%;margin:0}body{background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}
+.app{height:100%;min-height:600px;display:flex;overflow:hidden}.sidebar{width:270px;flex:0 0 270px;background:#171717;border-right:1px solid #303030;display:flex;flex-direction:column;padding:16px 12px;transition:margin .25s,width .25s;z-index:5}.sidebar.closed{margin-left:-270px}.side-brand{display:flex;align-items:center;gap:10px;padding:7px 9px 20px}.mark{width:31px;height:31px;border-radius:9px;background:#e6eee7;color:#244b35;display:grid;place-items:center;font-weight:900}.brand-name{font-weight:750;font-size:15px}.brand-sub{font-size:10px;color:#929292;margin-top:2px;letter-spacing:.5px}.new-chat{border:1px solid #454545;background:transparent;color:#eee;text-align:left;border-radius:9px;padding:11px 12px;font-size:13px;margin-bottom:25px}.new-chat:hover,.history button:hover{background:#2c2c2c}.side-label{font-size:11px;color:#858585;padding:0 10px;margin:0 0 8px}.history{display:grid;gap:3px}.history button{border:0;background:transparent;color:#c8c8c8;text-align:left;border-radius:7px;padding:9px 10px;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.side-bottom{margin-top:auto;border-top:1px solid #333;padding:14px 8px 4px;display:flex;align-items:center;gap:10px}.avatar{width:30px;height:30px;border-radius:50%;background:#d6e6d9;color:#254b34;display:grid;place-items:center;font-size:12px;font-weight:800}.account{font-size:12px;color:#ddd}
+.main{min-width:0;flex:1;display:flex;flex-direction:column;position:relative}.topbar{height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 21px;border-bottom:1px solid #303030}.top-left{display:flex;align-items:center;gap:14px}.hamburger{width:35px;height:35px;border:0;background:transparent;color:#ddd;border-radius:8px;font-size:21px}.hamburger:hover{background:#333}.top-title{font-size:14px;font-weight:650}.top-right{font-size:11px;color:#8c8c8c}
+.chat-area{flex:1;overflow:auto;display:flex;flex-direction:column;align-items:center;padding:0 22px 26px}.center-stage{width:min(820px,100%);margin:auto 0;display:flex;flex-direction:column;align-items:center;padding:65px 0 25px}.hero{text-align:center;margin-bottom:29px}.hero-mark{width:46px;height:46px;margin:0 auto 18px;border-radius:15px;background:#e6eee7;color:#244b35;display:grid;place-items:center;font-size:22px;font-weight:900}.hero h1{font-size:clamp(25px,4vw,34px);letter-spacing:-.9px;font-weight:650;margin:0 0 10px;color:#f4f4f4}.hero p{font-size:14px;color:#a5a5a5;margin:0;line-height:1.6}
+.tool-row{display:flex;justify-content:center;align-items:center;gap:9px;flex-wrap:wrap;margin:0 auto 25px;max-width:800px}.tool-chip{border:1px solid #505050;background:transparent;color:#d4d4d4;border-radius:22px;padding:9px 14px;font-size:12px;white-space:nowrap;transition:.15s}.tool-chip:hover,.tool-chip.active{background:#3b3b3b;border-color:#777;color:#fff}.tool-chip .sym{color:var(--green);margin-right:6px}
+.prompt-wrap{width:min(760px,100%);background:#2f2f2f;border:1px solid #4b4b4b;border-radius:17px;padding:13px 15px 11px;box-shadow:0 8px 30px #0002}.prompt-wrap:focus-within{border-color:#737373}.prompt-wrap textarea{width:100%;min-height:55px;max-height:160px;resize:vertical;border:0;outline:0;background:transparent;color:#eee;font-size:14px;line-height:1.55;padding:2px 2px 8px}.prompt-wrap textarea::placeholder{color:#929292}.prompt-bottom{display:flex;justify-content:space-between;align-items:center}.prompt-hint{font-size:10px;color:#858585}.send{width:34px;height:34px;border:0;border-radius:50%;background:#e8e8e8;color:#222;font-size:19px;font-weight:700}.send:hover{background:white}.footnote{font-size:10px;color:#747474;text-align:center;margin-top:16px}
+.modal-backdrop{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:18px;z-index:20}.modal-backdrop.open{display:flex}.modal{width:min(470px,100%);background:#292929;border:1px solid #4a4a4a;border-radius:16px;padding:22px;box-shadow:0 25px 80px #0008}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}.modal-head h2{font-size:17px;margin:0}.close{border:0;background:transparent;color:#aaa;font-size:23px}.modal-intro{font-size:12px;color:#aaa;line-height:1.5;margin:-7px 0 17px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:11px;color:#bdbdbd}.field input,.field select,.field textarea{width:100%;border:1px solid #505050;border-radius:8px;background:#202020;color:#eee;padding:10px;font-size:12px;outline:0}.field textarea{min-height:75px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{border-color:#86b99a}.modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}.cancel,.continue{border-radius:8px;padding:9px 14px;font-size:12px}.cancel{border:1px solid #555;background:transparent;color:#ddd}.continue{border:0;background:#e8e8e8;color:#222;font-weight:700}
+
+@media(max-width:700px){.sidebar{position:absolute;inset:0 auto 0 0;width:270px;box-shadow:15px 0 45px #0008}.sidebar.closed{margin-left:-270px}.topbar{padding:0 13px}.top-right{display:none}.chat-area{padding:0 14px 20px}.center-stage{padding:40px 0 20px}.hero{margin-bottom:25px}.hero p{font-size:13px}.tool-row{gap:7px;margin-bottom:20px}.tool-chip{padding:8px 11px;font-size:11px}.fields{grid-template-columns:1fr}.field.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <div class="side-brand"><div class="mark">M</div><div><div class="brand-name">Mwalimu AI</div><div class="brand-sub">Your teaching assistant</div></div></div>
+  <button class="new-chat" onclick="newChat()">＋ &nbsp; New chat</button>
+  <div class="side-label">Recent</div>
+  <div class="history" id="history">
+    <button onclick="loadHistory('Biology — Cell structure')">Biology — Cell structure</button>
+    <button onclick="loadHistory('Senior 2 Chemistry revision')">Senior 2 Chemistry revision</button>
+    <button onclick="loadHistory('End of term assessment')">End of term assessment</button>
+  </div>
+  <div class="side-bottom"><div class="avatar">T</div><div class="account">Teacher workspace</div></div>
+</aside>
+<main class="main">
+  <header class="topbar"><div class="top-left"><button class="hamburger" aria-label="Open history" onclick="toggleSidebar()">☰</button><div class="top-title">Mwalimu AI</div></div><div class="top-right">Made for Ugandan teachers</div></header>
+  <section class="chat-area">
+    <div class="center-stage">
+      <div class="hero"><div class="hero-mark">M</div><h1>What can I help you teach today?</h1><p>Your teaching assistant, built with Uganda's classrooms in mind.</p></div>
+      <div class="tool-row" aria-label="Teaching tools">
+        <button class="tool-chip" onclick="openTool('Lesson plan')"><span class="sym">✦</span>Lesson plan</button>
+        <button class="tool-chip" onclick="openTool('Scheme of work')"><span class="sym">▤</span>Scheme of work</button>
+        <button class="tool-chip" onclick="openTool('Examination paper')"><span class="sym">▧</span>Examination</button>
+        <button class="tool-chip" onclick="openTool('Marking guide')"><span class="sym">✓</span>Marking guide</button>
+        <button class="tool-chip" onclick="openTool('Teaching notes')"><span class="sym">▣</span>Teaching notes</button>
+      </div>
+      <div class="prompt-wrap">
+        <textarea id="prompt" placeholder="Message Mwalimu AI..." rows="2"></textarea>
+        <div class="prompt-bottom"><span class="prompt-hint">Ask anything about teaching or learning</span><button class="send" onclick="sendPrompt()" aria-label="Send message">↑</button></div>
+      </div>
+      <div class="footnote">Mwalimu AI can make mistakes. Review generated teaching materials before use.</div>
+    </div>
+  </section>
+</main>
+</div>
+<div class="modal-backdrop" id="modal" onclick="backdropClose(event)">
+  <div class="modal">
+    <div class="modal-head"><h2 id="modalTitle">Create a lesson plan</h2><button class="close" onclick="closeModal()" aria-label="Close">×</button></div>
+    <p class="modal-intro">First, tell Mwalimu a little about the resource you need.</p>
+    <form id="detailsForm">
+      <div class="fields">
+        <div class="field"><label for="subject">Subject</label><select id="subject"><option>Biology</option><option>Chemistry</option><option>Physics</option><option>Mathematics</option><option>English</option><option>Geography</option><option>History</option><option>ICT</option><option>Other</option></select></div>
+        <div class="field"><label for="level">Class / Level</label><select id="level"><option>Senior 1</option><option>Senior 2</option><option>Senior 3</option><option>Senior 4</option><option>Senior 5</option><option>Senior 6</option><option>Primary</option><option>Other</option></select></div>
+        <div class="field full"><label for="topic">Topic / learning area</label><input id="topic" required placeholder="e.g. Cell structure and organisation"></div>
+        <div class="field"><label for="duration">Duration</label><select id="duration"><option>40 minutes</option><option>80 minutes</option><option>One week</option><option>One term</option><option>Not applicable</option></select></div>
+        <div class="field"><label for="format">Preferred output</label><select id="format"><option>Chat response</option><option>Word document</option><option>PDF document</option></select></div>
+        <div class="field full"><label for="extra">Additional instructions (optional)</label><textarea id="extra" placeholder="Any specific requirements or areas to cover?"></textarea></div>
+      </div>
+      <div class="modal-actions"><button class="cancel" type="button" onclick="closeModal()">Cancel</button><button class="continue" type="submit">Continue →</button></div>
+    </form>
+  </div>
+</div>
+<script>
+let currentTool='',requestText='';
+const sidebar=document.getElementById('sidebar');
+function toggleSidebar(){sidebar.classList.toggle('closed')}
+function newChat(){document.getElementById('prompt').value='';closeModal();if(innerWidth<=700)sidebar.classList.add('closed')}
+function loadHistory(title){document.getElementById('prompt').value=title;document.getElementById('prompt').focus();if(innerWidth<=700)sidebar.classList.add('closed')}
+function openTool(tool){currentTool=tool;document.getElementById('modalTitle').textContent='Create '+(tool==='Examination paper'?'an examination paper':tool.toLowerCase());document.getElementById('modal').classList.add('open');document.getElementById('topic').focus()}
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+function backdropClose(e){if(e.target.id==='modal')closeModal()}
+document.getElementById('detailsForm').addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.target);requestText=`Please prepare a complete ${currentTool.toLowerCase()} for ${f.get('subject')} ${f.get('level')} on ${f.get('topic')}. Duration: ${f.get('duration')}. Preferred output: ${f.get('format')}. Additional instructions: ${f.get('extra')||'None'}. Please align it with the relevant Ugandan curriculum.`;const box=document.getElementById('prompt');box.value=requestText;closeModal();box.focus();box.style.height='auto';box.style.height=Math.min(box.scrollHeight,160)+'px';});
+function sendPrompt(){const box=document.getElementById('prompt');const q=box.value.trim();if(!q)return;requestText=q;box.focus();/* AI engine will be connected in the backend stage. Keep the drafted message in the composer until then. */}
+document.getElementById('prompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendPrompt()}});
+if(innerWidth<=700)sidebar.classList.add('closed');
+</script>
+</body>
+</html>
