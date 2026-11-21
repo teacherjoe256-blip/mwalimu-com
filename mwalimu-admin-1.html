@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#123c2e">
-<title>Mwalimu.site | Admin</title>
+<title>Mwalimu.com | Admin</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--green:#14533e;--green2:#e9f3ed;--ink:#17231e;--muted:#6b7771;--line:#e2e9e4;--paper:#f5f8f5;--white:#fff;--red:#a52d2d}
@@ -22,12 +22,11 @@ label{display:block;font-weight:750;font-size:12px;margin:13px 0 6px}input,selec
 .content-row{border-top:1px solid var(--line);padding:14px 0;display:flex;justify-content:space-between;gap:12px;align-items:center}.content-row h3{font-size:14px;margin:0 0 4px}.content-row .meta{max-width:560px;overflow-wrap:anywhere}
 @media(max-width:800px){.grid{grid-template-columns:1fr}.intro{display:block}.stats{flex-wrap:wrap}.resource{align-items:flex-start;flex-direction:column}.resource-actions{justify-content:flex-start}.row{grid-template-columns:1fr 1fr}}
 </style>
-<meta name="robots" content="noindex, nofollow, noarchive">
 </head>
 <body>
 <header><div class="brand">Mwalimu<span>.com</span> <small style="font-size:11px;font-weight:600;opacity:.8">ADMIN</small></div><div class="header-right"><span id="who" class="topnote"></span><button id="logout" class="btn secondary small" hidden>Sign out</button></div></header>
 <section id="login" class="panel">
- <div class="eyebrow">Administrator access</div><h1>Welcome back.</h1><p class="sub">Sign in with your mwalimu.site administrator account.</p>
+ <div class="eyebrow">Administrator access</div><h1>Welcome back.</h1><p class="sub">Sign in with your Mwalimu.com administrator account.</p>
  <form id="loginForm"><label>Email address</label><input id="email" type="email" autocomplete="username" required value="adminmwalimu@gmail.com"><label>Password</label><input id="password" type="password" autocomplete="current-password" required><button class="btn" style="width:100%;margin-top:18px" id="loginBtn">Sign in to dashboard</button></form>
  <p style="text-align:center;margin:12px 0 0"><button type="button" id="forgotPassword" class="btn secondary">Forgot password?</button></p>
  <p id="loginStatus" class="status" role="status"></p>
@@ -36,7 +35,7 @@ label{display:block;font-weight:750;font-size:12px;margin:13px 0 6px}input,selec
 <section id="passwordReset" class="panel" hidden>
  <div class="eyebrow">Account security</div>
  <h1>Create a new password.</h1>
- <p class="sub">Choose a new password for your mwalimu.site administrator account.</p>
+ <p class="sub">Choose a new password for your Mwalimu.com administrator account.</p>
  <form id="resetPasswordForm">
   <label>New password</label>
   <input id="newPassword" type="password" minlength="8" autocomplete="new-password" required>
@@ -48,7 +47,7 @@ label{display:block;font-weight:750;font-size:12px;margin:13px 0 6px}input,selec
 </section>
 
 <main id="app" hidden>
- <div class="intro"><div><div class="eyebrow">Content management</div><h1>Resource dashboard</h1><p class="sub">Upload, organise and publish teaching materials for the mwalimu.site library.</p></div></div>
+ <div class="intro"><div><div class="eyebrow">Content management</div><h1>Resource dashboard</h1><p class="sub">Upload, organise and publish teaching materials for the Mwalimu.com library.</p></div></div>
  <div class="stats"><div class="stat"><b id="totalCount">0</b><span>ALL RESOURCES</span></div><div class="stat"><b id="publishedCount">0</b><span>PUBLISHED</span></div><div class="stat"><b id="draftCount">0</b><span>DRAFTS</span></div></div>
  <div class="grid">
   <section class="panel">
@@ -86,6 +85,32 @@ label{display:block;font-weight:750;font-size:12px;margin:13px 0 6px}input,selec
     <div><div class="toolbar"><input id="contentSearch" placeholder="Search website content…"><select id="contentFilter" style="max-width:190px"><option value="">All sections</option><option value="update">Updates</option><option value="hero">Hero slides</option><option value="ai">Mwalimu AI</option><option value="job">Jobs</option><option value="academy">Academy</option><option value="community">Community</option><option value="site_text">Other text</option></select></div><div id="contentList"><div class="empty">Loading website content…</div></div></div>
    </div>
   </section>
+
+  <section class="panel" style="margin-top:22px" id="knowledgeBasePanel">
+   <h2>Mwalimu AI knowledge base</h2>
+   <p class="hint">Upload approved curriculum and teaching documents for Mwalimu AI to search when answering. These files are private and separate from the public Resource Library.</p>
+   <div class="grid" style="grid-template-columns:minmax(260px,.85fr) minmax(0,1.5fr)">
+    <div>
+     <form id="knowledgeForm">
+      <label>Document title *</label><input id="kbTitle" maxlength="220" required placeholder="e.g. Uganda Advanced Level Chemistry syllabus">
+      <label>Subject</label><input id="kbSubject" maxlength="100" placeholder="e.g. Chemistry">
+      <label>Education level</label><select id="kbLevel"><option value="secondary">Secondary</option><option value="primary">Primary</option><option value="general">General / cross-curricular</option></select>
+      <label>Document type</label><select id="kbType"><option value="syllabus">Syllabus</option><option value="teacher_guide">Teacher's guide</option><option value="curriculum_framework">Curriculum framework</option><option value="past_paper">Past paper / assessment</option><option value="textbook">Textbook / learning material</option><option value="policy">Policy / circular</option><option value="other">Other approved source</option></select>
+      <label>Curriculum / syllabus version</label><input id="kbVersion" maxlength="100" placeholder="e.g. NCDC 2025">
+      <label>Source URL (optional)</label><input id="kbSource" type="url" placeholder="https://...">
+      <label>Document file *</label><input id="kbFile" type="file" accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" required>
+      <div class="file-note">Supported formats: PDF, DOCX and TXT. Maximum file size: 50 MB. Text is extracted in your browser before indexing.</div>
+      <div class="actions"><button class="btn" id="kbUploadBtn" type="submit">Upload and process</button></div>
+      <p id="kbStatus" class="status" role="status"></p>
+     </form>
+    </div>
+    <div>
+     <div class="toolbar"><input id="kbSearch" placeholder="Search knowledge documents…"><select id="kbStatusFilter" style="max-width:180px"><option value="">All processing statuses</option><option value="ready">Ready</option><option value="pending">Pending</option><option value="processing">Processing</option><option value="failed">Failed</option></select></div>
+     <div id="kbList"><div class="empty">Loading knowledge documents…</div></div>
+    </div>
+   </div>
+  </section>
+
 </main>
 <script>
 const SUPABASE_URL="https://ilzbxafrtxfurccqdpub.supabase.co";
@@ -216,7 +241,115 @@ await loadResources()
   }catch(err){alert(err.message||"Could not complete the action.")}finally{b.disabled=false}
  });
  const previousShowApp=showApp;showApp=function(){previousShowApp();loadSiteContent()};
- checkSession();
+ 
+// Mwalimu AI knowledge-base manager. This is separate from public resources.
+let knowledgeDocs=[];
+const kbTypes={syllabus:"Syllabus",teacher_guide:"Teacher's guide",curriculum_framework:"Curriculum framework",past_paper:"Past paper / assessment",textbook:"Textbook / learning material",policy:"Policy / circular",other:"Other approved source"};
+function kbEscape(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function kbStatusLabel(v){return ({ready:"READY",pending:"PENDING",processing:"PROCESSING",failed:"FAILED"})[v]||String(v||"UNKNOWN").toUpperCase()}
+async function loadKnowledgeDocs(){
+ const box=$("kbList");if(!box)return;
+ const {data,error}=await db.from("ai_knowledge_documents").select("*").order("created_at",{ascending:false});
+ if(error){box.innerHTML=`<div class="empty">Could not load knowledge base: ${kbEscape(error.message)}</div>`;return}
+ knowledgeDocs=data||[];renderKnowledgeDocs();
+}
+function renderKnowledgeDocs(){
+ const q=$("kbSearch").value.toLowerCase().trim(),status=$("kbStatusFilter").value;
+ const rows=knowledgeDocs.filter(d=>(!status||d.processing_status===status)&&(!q||[d.title,d.description,d.subject,d.level,d.document_type,d.curriculum_version,d.file_name].join(" ").toLowerCase().includes(q)));
+ if(!rows.length){$("kbList").innerHTML='<div class="empty">No knowledge documents found. Add the first approved document using the form.</div>';return}
+ $("kbList").innerHTML=rows.map(d=>`<article class="content-row">
+  <div><h3>${kbEscape(d.title)}</h3><div class="meta">${kbEscape(d.subject||"Unspecified subject")} · ${kbEscape(d.level||"General")} · ${kbEscape(kbTypes[d.document_type]||d.document_type||"Document")}</div>
+  <div class="meta">${kbEscape(d.file_name||"File")} · ${kbEscape(d.curriculum_version||"Version not specified")}</div>
+  <span class="pill ${d.processing_status==="ready"&&d.is_active?"live":"draft"}">${kbEscape(kbStatusLabel(d.processing_status))}</span>
+  <span class="pill">${d.is_active?"ACTIVE":"INACTIVE"}</span>
+  ${d.last_processed_at?`<div class="meta">Last processed: ${new Date(d.last_processed_at).toLocaleString()}</div>`:""}
+  </div><div class="resource-actions">
+   <button class="btn secondary small" data-kb-action="toggle" data-id="${d.id}">${d.is_active?"Deactivate":"Activate"}</button>
+   <button class="btn danger small" data-kb-action="delete" data-id="${d.id}">Delete</button>
+  </div></article>`).join("");
+}
+$("kbSearch").addEventListener("input",renderKnowledgeDocs);
+$("kbStatusFilter").addEventListener("change",renderKnowledgeDocs);
+async function loadExternalScript(src,globalName){
+ if(window[globalName])return;
+ await new Promise((resolve,reject)=>{const old=document.querySelector(`script[data-kb-lib="${globalName}"]`);if(old){old.addEventListener("load",resolve,{once:true});old.addEventListener("error",reject,{once:true});return}
+ const el=document.createElement("script");el.src=src;el.async=true;el.dataset.kbLib=globalName;el.onload=resolve;el.onerror=()=>reject(new Error("Could not load the document reader. Check your internet connection and try again."));document.head.appendChild(el)});
+ if(!window[globalName])throw new Error("The document reader did not initialise.");
+}
+async function extractKnowledgeText(file){
+ const ext=(file.name.split(".").pop()||"").toLowerCase();
+ if(ext==="txt")return await file.text();
+ if(ext==="pdf"){
+  await loadExternalScript("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js","pdfjsLib");
+  window.pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  const pdf=await window.pdfjsLib.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise;
+  const pages=[];
+  for(let n=1;n<=pdf.numPages;n++){const page=await pdf.getPage(n);const content=await page.getTextContent();pages.push(content.items.map(x=>x.str||"").join(" "))}
+  return pages.join("\n\n");
+ }
+ if(ext==="docx"){
+  await loadExternalScript("https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js","mammoth");
+  const result=await window.mammoth.extractRawText({arrayBuffer:await file.arrayBuffer()});return result.value||"";
+ }
+ throw new Error("Unsupported file type. Please use PDF, DOCX or TXT.");
+}
+$("knowledgeForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ if(!user||user.app_metadata?.role!=="admin"){setStatus("kbStatus","Administrator session required.",true);return}
+ const file=$("kbFile").files[0];if(!file){setStatus("kbStatus","Choose a document file first.",true);return}
+ if(file.size>50*1024*1024){setStatus("kbStatus","This file is larger than 50 MB.",true);return}
+ const btn=$("kbUploadBtn");btn.disabled=true;
+ let docId=null,filePath=null;
+ try{
+  setStatus("kbStatus","Reading document and extracting text…");
+  const extracted=await extractKnowledgeText(file);
+  const cleanText=String(extracted||"").replace(/\u0000/g,"").trim();
+  if(!cleanText)throw new Error("No selectable text was found. Scanned/image-only PDFs need OCR before they can be indexed.");
+  if(cleanText.length>180000)throw new Error("Extracted text exceeds 180,000 characters. Split this document into smaller parts.");
+  const ext=(file.name.split(".").pop()||"file").toLowerCase();
+  filePath=`${crypto.randomUUID()}/${Date.now()}.${ext}`;
+  setStatus("kbStatus","Uploading private source file…");
+  const upload=await db.storage.from("mwalimu-ai-knowledge").upload(filePath,file,{contentType:file.type||"application/octet-stream",upsert:false});
+  if(upload.error)throw upload.error;
+  const metadata={document_type:$("kbType").value,original_file_name:file.name,uploaded_via:"mwalimu_admin_dashboard"};
+  const record={title:$("kbTitle").value.trim(),description:null,subject:$("kbSubject").value.trim()||null,level:$("kbLevel").value,file_path:filePath,file_name:file.name,mime_type:file.type||null,uploaded_by:user.id,curriculum_version:$("kbVersion").value.trim()||null,source_url:$("kbSource").value.trim()||null,document_type:$("kbType").value,metadata,processing_status:"pending",is_active:true};
+  const ins=await db.from("ai_knowledge_documents").insert(record).select("id").single();
+  if(ins.error)throw ins.error;docId=ins.data.id;
+  setStatus("kbStatus","Document uploaded. Creating searchable chunks and embeddings…");
+  const {data:sessionData}=await db.auth.getSession();
+  const token=sessionData?.session?.access_token;
+  if(!token)throw new Error("Your admin session expired. Sign in again and retry.");
+  const result=await db.functions.invoke("mwalimu-ai-ingest",{body:{document_id:docId,text:cleanText}});
+  if(result.error)throw result.error;
+  if(result.data?.error)throw new Error(result.data.error);
+  setStatus("kbStatus",`Document processed successfully. ${result.data?.chunks_created??"Searchable"} chunks created.`);
+  $("knowledgeForm").reset();await loadKnowledgeDocs();
+ }catch(err){
+  const msg=err?.message||"Could not upload or process this document.";
+  if(docId)await db.from("ai_knowledge_documents").update({processing_status:"failed"}).eq("id",docId);
+  if(!docId&&filePath)await db.storage.from("mwalimu-ai-knowledge").remove([filePath]);
+  setStatus("kbStatus",msg,true);await loadKnowledgeDocs();
+ }finally{btn.disabled=false}
+});
+$("kbList").addEventListener("click",async e=>{
+ const b=e.target.closest("button[data-kb-action]");if(!b)return;
+ const d=knowledgeDocs.find(x=>x.id===b.dataset.id);if(!d)return;b.disabled=true;
+ try{
+  if(b.dataset.kbAction==="toggle"){
+   const {error}=await db.from("ai_knowledge_documents").update({is_active:!d.is_active,updated_at:new Date().toISOString()}).eq("id",d.id);
+   if(error)throw error;
+  }else if(b.dataset.kbAction==="delete"){
+   if(!confirm(`Delete "${d.title}" and all its indexed chunks? This cannot be undone.`))return;
+   const {error:storageError}=await db.storage.from("mwalimu-ai-knowledge").remove([d.file_path]);if(storageError)throw storageError;
+   const {error}=await db.from("ai_knowledge_documents").delete().eq("id",d.id);if(error)throw error;
+  }
+  await loadKnowledgeDocs();
+ }catch(err){alert(err.message||"Could not complete the action.")}finally{b.disabled=false}
+});
+const previousShowAppForKnowledge=showApp;
+showApp=function(){previousShowAppForKnowledge();loadKnowledgeDocs()};
+
+checkSession();
 
 </script>
 </body></html>
