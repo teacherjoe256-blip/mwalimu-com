@@ -17,6 +17,43 @@
 .modal-backdrop{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:18px;z-index:20}.modal-backdrop.open{display:flex}.modal{width:min(470px,100%);background:#292929;border:1px solid #4a4a4a;border-radius:16px;padding:22px;box-shadow:0 25px 80px #0008}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}.modal-head h2{font-size:17px;margin:0}.close{border:0;background:transparent;color:#aaa;font-size:23px}.modal-intro{font-size:12px;color:#aaa;line-height:1.5;margin:-7px 0 17px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:11px;color:#bdbdbd}.field input,.field select,.field textarea{width:100%;border:1px solid #505050;border-radius:8px;background:#202020;color:#eee;padding:10px;font-size:12px;outline:0}.field textarea{min-height:75px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{border-color:#86b99a}.modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}.cancel,.continue{border-radius:8px;padding:9px 14px;font-size:12px}.cancel{border:1px solid #555;background:transparent;color:#ddd}.continue{border:0;background:#e8e8e8;color:#222;font-weight:700}
 
 @media(max-width:700px){.sidebar{position:absolute;inset:0 auto 0 0;width:270px;box-shadow:15px 0 45px #0008}.sidebar.closed{margin-left:-270px}.topbar{padding:0 13px}.top-right{display:none}.chat-area{padding:0 14px 20px}.center-stage{padding:40px 0 20px}.hero{margin-bottom:25px}.hero p{font-size:13px}.tool-row{gap:7px;margin-bottom:20px}.tool-chip{padding:8px 11px;font-size:11px}.fields{grid-template-columns:1fr}.field.full{grid-column:auto}}
+
+/* Connected chat experience */
+.chat-area{align-items:stretch;padding:0 22px 18px}
+.center-stage{width:min(820px,100%);margin:0 auto;padding:36px 0 18px;min-height:100%;justify-content:flex-end}
+.hero{margin:auto auto 26px}
+.conversation{width:min(820px,100%);margin:0 auto 18px;display:flex;flex-direction:column;gap:18px}
+.message{display:flex;gap:12px;align-items:flex-start;width:100%}
+.message.user{justify-content:flex-end}
+.message-badge{width:30px;height:30px;flex:0 0 30px;border-radius:50%;display:grid;place-items:center;background:#dcebe1;color:#244b35;font-size:12px;font-weight:900}
+.message-content{max-width:min(680px,calc(100% - 44px));padding:13px 16px;border-radius:15px;background:#303030;color:#ededed;font-size:14px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}
+.message.user .message-content{background:#3b493f;color:#f5fff7}
+.message.pending .message-content{color:#aaa}
+.chat-compose{width:min(760px,100%);margin:0 auto}
+.prompt-wrap{width:100%}
+.prompt-wrap textarea{display:block}
+.send:disabled{opacity:.45;cursor:wait}
+.status-line{min-height:18px;margin:8px 4px 0;color:#aaa;font-size:11px;text-align:center}
+.status-line.error{color:#ffaaa3}
+.auth-gate{position:fixed;inset:0;z-index:50;background:#111e;display:none;align-items:center;justify-content:center;padding:20px}
+.auth-gate.show{display:flex}
+.auth-card{width:min(420px,100%);padding:26px;background:#292929;border:1px solid #484848;border-radius:17px;box-shadow:0 24px 70px #0009}
+.auth-card h2{margin:0 0 8px;font-size:21px}
+.auth-card p{margin:0 0 18px;color:#aaa;font-size:13px;line-height:1.55}
+.auth-card label{display:block;margin:12px 0 6px;color:#bbb;font-size:12px}
+.auth-card input{width:100%;padding:12px;border:1px solid #505050;border-radius:8px;background:#202020;color:#eee;outline:0}
+.auth-card input:focus{border-color:#86b99a}
+.auth-card button{margin-top:15px;width:100%;padding:12px;border:0;border-radius:9px;background:#dcebe1;color:#183729;font-weight:800}
+.auth-switch{display:block;margin-top:14px;text-align:center;color:#a8d2b4;font-size:12px;cursor:pointer}
+.auth-error{min-height:17px;margin-top:9px;color:#ffaaa3;font-size:11px}
+@media(max-width:700px){
+ .chat-area{padding:0 13px 14px}
+ .center-stage{padding:25px 0 12px}
+ .conversation{gap:14px}
+ .message-content{font-size:13px;padding:11px 13px}
+ .chat-compose{padding-bottom:env(safe-area-inset-bottom)}
+}
+
 </style>
 </head>
 <body>
@@ -34,25 +71,50 @@
 </aside>
 <main class="main">
   <header class="topbar"><div class="top-left"><button class="hamburger" aria-label="Open history" onclick="toggleSidebar()">☰</button><div class="top-title">Mwalimu AI</div></div><div class="top-right">Made for Ugandan teachers</div></header>
-  <section class="chat-area">
+  <section class="chat-area" aria-label="Mwalimu AI conversation">
     <div class="center-stage">
-      <div class="hero"><div class="hero-mark">M</div><h1>What can I help you teach today?</h1><p>Your teaching assistant, built with Uganda's classrooms in mind.</p></div>
-      <div class="tool-row" aria-label="Teaching tools">
-        <button class="tool-chip" onclick="openTool('Lesson plan')"><span class="sym">✦</span>Lesson plan</button>
-        <button class="tool-chip" onclick="openTool('Scheme of work')"><span class="sym">▤</span>Scheme of work</button>
-        <button class="tool-chip" onclick="openTool('Examination paper')"><span class="sym">▧</span>Examination</button>
-        <button class="tool-chip" onclick="openTool('Marking guide')"><span class="sym">✓</span>Marking guide</button>
-        <button class="tool-chip" onclick="openTool('Teaching notes')"><span class="sym">▣</span>Teaching notes</button>
+      <div class="hero" id="welcomeHero">
+        <div class="hero-mark">M</div>
+        <h1>What can I help you teach today?</h1>
+        <p>Your teaching assistant, built with Uganda's classrooms in mind.</p>
       </div>
-      <div class="prompt-wrap">
-        <textarea id="prompt" placeholder="Message Mwalimu AI..." rows="2"></textarea>
-        <div class="prompt-bottom"><span class="prompt-hint">Ask anything about teaching or learning</span><button class="send" onclick="sendPrompt()" aria-label="Send message">↑</button></div>
+      <div class="conversation" id="conversation" aria-live="polite"></div>
+      <div class="chat-compose">
+        <div class="tool-row" aria-label="Teaching tools">
+          <button class="tool-chip" onclick="openTool('Lesson plan')"><span class="sym">✦</span>Lesson plan</button>
+          <button class="tool-chip" onclick="openTool('Scheme of work')"><span class="sym">▤</span>Scheme of work</button>
+          <button class="tool-chip" onclick="openTool('Examination paper')"><span class="sym">▧</span>Examination</button>
+          <button class="tool-chip" onclick="openTool('Marking guide')"><span class="sym">✓</span>Marking guide</button>
+          <button class="tool-chip" onclick="openTool('Teaching notes')"><span class="sym">▣</span>Teaching notes</button>
+        </div>
+        <div class="prompt-wrap">
+          <textarea id="prompt" placeholder="Message Mwalimu AI..." rows="2"></textarea>
+          <div class="prompt-bottom"><span class="prompt-hint">Ask anything about teaching or learning</span><button class="send" id="sendButton" onclick="sendPrompt()" aria-label="Send message">↑</button></div>
+        </div>
+        <div class="status-line" id="chatStatus" role="status"></div>
+        <div class="footnote">Mwalimu AI can make mistakes. Review generated teaching materials before use.</div>
       </div>
-      <div class="footnote">Mwalimu AI can make mistakes. Review generated teaching materials before use.</div>
     </div>
   </section>
 </main>
 </div>
+
+<div class="auth-gate" id="authGate" role="dialog" aria-modal="true" aria-labelledby="authGateTitle">
+  <div class="auth-card">
+    <h2 id="authGateTitle">Sign in to Mwalimu AI</h2>
+    <p>Use your existing Mwalimu account to start a conversation. Your account is shared with the rest of mwalimu.site.</p>
+    <form id="workspaceAuthForm">
+      <label for="workspaceEmail">Email address</label>
+      <input id="workspaceEmail" type="email" autocomplete="email" required>
+      <label for="workspacePassword">Password</label>
+      <input id="workspacePassword" type="password" autocomplete="current-password" minlength="6" required>
+      <button id="workspaceAuthSubmit" type="submit">Sign in</button>
+      <div class="auth-error" id="workspaceAuthError" aria-live="polite"></div>
+    </form>
+    <span class="auth-switch" id="workspaceAuthToggle">Create a Mwalimu account</span>
+  </div>
+</div>
+
 <div class="modal-backdrop" id="modal" onclick="backdropClose(event)">
   <div class="modal">
     <div class="modal-head"><h2 id="modalTitle">Create a lesson plan</h2><button class="close" onclick="closeModal()" aria-label="Close">×</button></div>
@@ -70,18 +132,194 @@
     </form>
   </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-let currentTool='',requestText='';
-const sidebar=document.getElementById('sidebar');
+const SUPABASE_URL = "https://ilzbxafrtxfurccqdpub.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_xodjAhF80sHdlo_8TyDCEA5t_";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+let currentTool = '', requestText = '', authMode = 'signin', isSending = false;
+let conversationHistory = [];
+const sidebar = document.getElementById('sidebar');
+const promptBox = document.getElementById('prompt');
+const conversation = document.getElementById('conversation');
+const sendButton = document.getElementById('sendButton');
+const chatStatus = document.getElementById('chatStatus');
+const welcomeHero = document.getElementById('welcomeHero');
+const authGate = document.getElementById('authGate');
+
 function toggleSidebar(){sidebar.classList.toggle('closed')}
-function newChat(){document.getElementById('prompt').value='';closeModal();if(innerWidth<=700)sidebar.classList.add('closed')}
-function loadHistory(title){document.getElementById('prompt').value=title;document.getElementById('prompt').focus();if(innerWidth<=700)sidebar.classList.add('closed')}
-function openTool(tool){currentTool=tool;document.getElementById('modalTitle').textContent='Create '+(tool==='Examination paper'?'an examination paper':tool.toLowerCase());document.getElementById('modal').classList.add('open');document.getElementById('topic').focus()}
+function newChat(){
+  conversationHistory = [];
+  conversation.replaceChildren();
+  welcomeHero.hidden = false;
+  promptBox.value = '';
+  chatStatus.textContent = '';
+  chatStatus.className = 'status-line';
+  closeModal();
+  if(innerWidth<=700) sidebar.classList.add('closed');
+  promptBox.focus();
+}
+function loadHistory(title){
+  promptBox.value = title;
+  promptBox.focus();
+  if(innerWidth<=700) sidebar.classList.add('closed');
+}
+function openTool(tool){
+  currentTool=tool;
+  document.getElementById('modalTitle').textContent='Create '+(tool==='Examination paper'?'an examination paper':tool.toLowerCase());
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('topic').focus();
+}
 function closeModal(){document.getElementById('modal').classList.remove('open')}
 function backdropClose(e){if(e.target.id==='modal')closeModal()}
-document.getElementById('detailsForm').addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.target);requestText=`Please prepare a complete ${currentTool.toLowerCase()} for ${f.get('subject')} ${f.get('level')} on ${f.get('topic')}. Duration: ${f.get('duration')}. Preferred output: ${f.get('format')}. Additional instructions: ${f.get('extra')||'None'}. Please align it with the relevant Ugandan curriculum.`;const box=document.getElementById('prompt');box.value=requestText;closeModal();box.focus();box.style.height='auto';box.style.height=Math.min(box.scrollHeight,160)+'px';});
-function sendPrompt(){const box=document.getElementById('prompt');const q=box.value.trim();if(!q)return;requestText=q;box.focus();/* AI engine will be connected in the backend stage. Keep the drafted message in the composer until then. */}
-document.getElementById('prompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendPrompt()}});
+
+document.getElementById('detailsForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const f=new FormData(e.target);
+  requestText=`Please prepare a complete ${currentTool.toLowerCase()} for ${f.get('subject')} ${f.get('level')} on ${f.get('topic')}. Duration: ${f.get('duration')}. Preferred output: ${f.get('format')}. Additional instructions: ${f.get('extra')||'None'}. Please align it with the relevant Ugandan curriculum.`;
+  promptBox.value=requestText;
+  closeModal();
+  promptBox.focus();
+  promptBox.style.height='auto';
+  promptBox.style.height=Math.min(promptBox.scrollHeight,160)+'px';
+});
+
+function addMessage(role, text, pending=false){
+  const row=document.createElement('div');
+  row.className='message '+role+(pending?' pending':'');
+  const badge=document.createElement('div');
+  badge.className='message-badge';
+  badge.textContent=role==='user'?'You':'M';
+  const bubble=document.createElement('div');
+  bubble.className='message-content';
+  bubble.textContent=text;
+  if(role==='user'){row.append(bubble,badge)}else{row.append(badge,bubble)}
+  conversation.appendChild(row);
+  const area=document.querySelector('.chat-area');
+  area.scrollTop=area.scrollHeight;
+  return bubble;
+}
+
+function setStatus(message, isError=false){
+  chatStatus.textContent=message;
+  chatStatus.className='status-line'+(isError?' error':'');
+}
+
+async function sendPrompt(){
+  if(isSending) return;
+  const q=promptBox.value.trim();
+  if(!q) return;
+
+  const {data:sessionData,error:sessionError}=await supabaseClient.auth.getSession();
+  if(sessionError){setStatus(sessionError.message,true);return;}
+  if(!sessionData.session){
+    authGate.classList.add('show');
+    document.getElementById('workspaceEmail').focus();
+    return;
+  }
+
+  isSending=true;
+  sendButton.disabled=true;
+  promptBox.value='';
+  promptBox.style.height='auto';
+  welcomeHero.hidden=true;
+  addMessage('user',q);
+  const pendingBubble=addMessage('assistant','Mwalimu AI is thinking…',true);
+  setStatus('Connecting to Mwalimu AI…');
+
+  try{
+    const {data,error}=await supabaseClient.functions.invoke('mwalimu-ai',{
+      body:{
+        task:'chat',
+        message:q,
+        messages:conversationHistory.slice(-12)
+      }
+    });
+    if(error){
+      let detail=error.message||'The AI request failed.';
+      try{
+        const payload=error.context && await error.context.json();
+        if(payload?.error) detail=payload.error+(payload.details?.length?': '+payload.details.join('; '):'');
+      }catch(_){}
+      throw new Error(detail);
+    }
+    const answer=data?.text||data?.response;
+    if(!data?.ok||!answer) throw new Error(data?.error||'Mwalimu AI returned an empty response.');
+    pendingBubble.textContent=answer;
+    pendingBubble.parentElement.classList.remove('pending');
+    conversationHistory.push({role:'user',content:q},{role:'assistant',content:answer});
+    setStatus(data.provider==='gemini'?'Answered by Mwalimu AI · Gemini':'Answered by Mwalimu AI');
+  }catch(error){
+    pendingBubble.textContent='I could not complete that request. '+(error.message||'Please try again.');
+    pendingBubble.parentElement.classList.remove('pending');
+    setStatus(error.message||'Something went wrong. Please try again.',true);
+  }finally{
+    isSending=false;
+    sendButton.disabled=false;
+    promptBox.focus();
+    const area=document.querySelector('.chat-area');
+    area.scrollTop=area.scrollHeight;
+  }
+}
+
+promptBox.addEventListener('input',()=>{
+  promptBox.style.height='auto';
+  promptBox.style.height=Math.min(promptBox.scrollHeight,160)+'px';
+});
+promptBox.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendPrompt();}
+});
+
+document.getElementById('workspaceAuthToggle').addEventListener('click',()=>{
+  authMode=authMode==='signin'?'signup':'signin';
+  document.getElementById('authGateTitle').textContent=authMode==='signup'?'Create your Mwalimu account':'Sign in to Mwalimu AI';
+  document.getElementById('workspaceAuthSubmit').textContent=authMode==='signup'?'Create account':'Sign in';
+  document.getElementById('workspaceAuthToggle').textContent=authMode==='signup'?'I already have an account':'Create a Mwalimu account';
+  document.getElementById('workspacePassword').autocomplete=authMode==='signup'?'new-password':'current-password';
+  document.getElementById('workspaceAuthError').textContent='';
+});
+
+document.getElementById('workspaceAuthForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const button=document.getElementById('workspaceAuthSubmit');
+  const errorBox=document.getElementById('workspaceAuthError');
+  button.disabled=true;
+  errorBox.textContent='Please wait…';
+  const email=document.getElementById('workspaceEmail').value.trim();
+  const password=document.getElementById('workspacePassword').value;
+  try{
+    const result=authMode==='signup'
+      ? await supabaseClient.auth.signUp({email,password})
+      : await supabaseClient.auth.signInWithPassword({email,password});
+    if(result.error) throw result.error;
+    if(authMode==='signup'&&!result.data.session){
+      authMode='signin';
+      document.getElementById('authGateTitle').textContent='Account created';
+      document.getElementById('workspaceAuthSubmit').textContent='Sign in';
+      document.getElementById('workspaceAuthToggle').textContent='I already have an account';
+      errorBox.textContent='Your account was created. If email confirmation is enabled, confirm your address before signing in.';
+      return;
+    }
+    authGate.classList.remove('show');
+    errorBox.textContent='';
+    setStatus('You are signed in. Start chatting.');
+    promptBox.focus();
+  }catch(error){
+    errorBox.textContent=error.message||'Authentication failed. Please try again.';
+  }finally{
+    button.disabled=false;
+  }
+});
+
+supabaseClient.auth.getSession().then(({data,error})=>{
+  if(error){setStatus(error.message,true);return;}
+  if(!data.session) authGate.classList.add('show');
+});
+supabaseClient.auth.onAuthStateChange((_event,session)=>{
+  if(session) authGate.classList.remove('show');
+});
+
 if(innerWidth<=700)sidebar.classList.add('closed');
 </script>
 </body>
