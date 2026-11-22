@@ -54,6 +54,35 @@
  .chat-compose{padding-bottom:env(safe-area-inset-bottom)}
 }
 
+
+/* Layout and conversation-history fixes */
+html,body{height:100%;min-height:100%;overflow:hidden}
+.app{height:100dvh;min-height:0;overflow:hidden}
+.main{min-height:0;min-width:0}
+.chat-area{min-height:0;min-width:0;display:block;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.center-stage{min-height:100%;height:auto;min-width:0;margin:0 auto;padding:36px 0 24px;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch}
+.hero{flex:1 0 auto;display:flex;flex-direction:column;justify-content:center;align-items:center;margin:0 0 28px}
+.conversation{flex:0 0 auto;min-height:0}
+.chat-compose{flex:0 0 auto;width:100%;margin-top:auto}
+.history{overflow-y:auto;min-height:0}
+.history-empty{padding:10px;color:#777;font-size:12px;line-height:1.5}
+.history button{width:100%;text-align:left;border:0;background:transparent;color:#ccc;border-radius:8px;padding:10px;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.history button.active{background:#303030;color:#fff}
+.history button .history-date{display:block;color:#777;font-size:10px;margin-top:3px}
+.tool-fields-help{grid-column:1/-1;color:#999;font-size:11px;line-height:1.5;margin-top:-2px}
+.field input:invalid,.field select:invalid{box-shadow:none}
+.modal{max-height:85dvh;overflow-y:auto}
+@media(max-width:700px){
+  .app{height:100dvh;min-height:0}
+  .main{height:100%;min-height:0}
+  .chat-area{height:calc(100dvh - 58px);padding:0 14px 18px}
+  .center-stage{min-height:100%;padding:24px 0 20px}
+  .hero{min-height:36vh}
+  .conversation{margin-bottom:18px}
+  .chat-compose{padding-bottom:max(8px,env(safe-area-inset-bottom))}
+  .sidebar{height:100dvh}
+}
+
 </style>
 </head>
 <body>
@@ -61,11 +90,9 @@
 <aside class="sidebar" id="sidebar">
   <div class="side-brand"><div class="mark">M</div><div><div class="brand-name">Mwalimu AI</div><div class="brand-sub">Your teaching assistant</div></div></div>
   <button class="new-chat" onclick="newChat()">＋ &nbsp; New chat</button>
-  <div class="side-label">Recent</div>
-  <div class="history" id="history">
-    <button onclick="loadHistory('Biology — Cell structure')">Biology — Cell structure</button>
-    <button onclick="loadHistory('Senior 2 Chemistry revision')">Senior 2 Chemistry revision</button>
-    <button onclick="loadHistory('End of term assessment')">End of term assessment</button>
+  <div class="side-label" id="historyLabel">Recent chats</div>
+  <div class="history" id="history" aria-live="polite">
+    <div class="history-empty">Your conversations will appear here.</div>
   </div>
   <div class="side-bottom"><div class="avatar">T</div><div class="account">Teacher workspace</div></div>
 </aside>
@@ -120,14 +147,7 @@
     <div class="modal-head"><h2 id="modalTitle">Create a lesson plan</h2><button class="close" onclick="closeModal()" aria-label="Close">×</button></div>
     <p class="modal-intro">First, tell Mwalimu a little about the resource you need.</p>
     <form id="detailsForm">
-      <div class="fields">
-        <div class="field"><label for="subject">Subject</label><select id="subject"><option>Biology</option><option>Chemistry</option><option>Physics</option><option>Mathematics</option><option>English</option><option>Geography</option><option>History</option><option>ICT</option><option>Other</option></select></div>
-        <div class="field"><label for="level">Class / Level</label><select id="level"><option>Senior 1</option><option>Senior 2</option><option>Senior 3</option><option>Senior 4</option><option>Senior 5</option><option>Senior 6</option><option>Primary</option><option>Other</option></select></div>
-        <div class="field full"><label for="topic">Topic / learning area</label><input id="topic" required placeholder="e.g. Cell structure and organisation"></div>
-        <div class="field"><label for="duration">Duration</label><select id="duration"><option>40 minutes</option><option>80 minutes</option><option>One week</option><option>One term</option><option>Not applicable</option></select></div>
-        <div class="field"><label for="format">Preferred output</label><select id="format"><option>Chat response</option><option>Word document</option><option>PDF document</option></select></div>
-        <div class="field full"><label for="extra">Additional instructions (optional)</label><textarea id="extra" placeholder="Any specific requirements or areas to cover?"></textarea></div>
-      </div>
+      <div class="fields" id="toolFields"></div>
       <div class="modal-actions"><button class="cancel" type="button" onclick="closeModal()">Cancel</button><button class="continue" type="submit">Continue →</button></div>
     </form>
   </div>
@@ -138,8 +158,12 @@ const SUPABASE_URL = "https://ilzbxafrtxfurccqdpub.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_xodjAhF80sHdlo_8TyDCEA_B2ZCA5t_";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-let currentTool = '', requestText = '', authMode = 'signin', isSending = false;
+let currentTool = '', authMode = 'signin', isSending = false;
 let conversationHistory = [];
+let activeChatId = null;
+let chatStore = [];
+let currentUserId = null;
+
 const sidebar = document.getElementById('sidebar');
 const promptBox = document.getElementById('prompt');
 const conversation = document.getElementById('conversation');
@@ -147,44 +171,196 @@ const sendButton = document.getElementById('sendButton');
 const chatStatus = document.getElementById('chatStatus');
 const welcomeHero = document.getElementById('welcomeHero');
 const authGate = document.getElementById('authGate');
+const historyList = document.getElementById('history');
 
+function storageKey(){
+  return 'mwalimu_ai_chats_' + (currentUserId || 'guest');
+}
+function loadStoredChats(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(storageKey())||'[]');
+    chatStore=Array.isArray(saved)?saved:[];
+  }catch(_){chatStore=[];}
+  renderHistory();
+}
+function saveStoredChats(){
+  try{localStorage.setItem(storageKey(),JSON.stringify(chatStore.slice(0,40)));}
+  catch(_){setStatus('Chat history could not be saved on this device.',true);}
+}
+function makeChatTitle(messages){
+  const first=messages.find(m=>m.role==='user')?.content||'New conversation';
+  return first.length>34?first.slice(0,34).trim()+'…':first;
+}
+function persistActiveChat(){
+  if(!activeChatId||!conversationHistory.length)return;
+  const existing=chatStore.findIndex(c=>c.id===activeChatId);
+  const record={id:activeChatId,title:makeChatTitle(conversationHistory),messages:conversationHistory,updatedAt:Date.now()};
+  if(existing>=0)chatStore[existing]=record;else chatStore.unshift(record);
+  chatStore.sort((a,b)=>b.updatedAt-a.updatedAt);
+  chatStore=chatStore.slice(0,40);
+  saveStoredChats();
+  renderHistory();
+}
+function renderHistory(){
+  historyList.replaceChildren();
+  if(!chatStore.length){
+    const empty=document.createElement('div');
+    empty.className='history-empty';
+    empty.textContent='Your conversations will appear here.';
+    historyList.appendChild(empty);
+    return;
+  }
+  chatStore.forEach(chat=>{
+    const button=document.createElement('button');
+    button.type='button';
+    button.className=chat.id===activeChatId?'active':'';
+    button.textContent=chat.title||'Conversation';
+    button.title=chat.title||'Conversation';
+    button.addEventListener('click',()=>loadHistory(chat.id));
+    historyList.appendChild(button);
+  });
+}
 function toggleSidebar(){sidebar.classList.toggle('closed')}
 function newChat(){
-  conversationHistory = [];
+  conversationHistory=[];
+  activeChatId=null;
   conversation.replaceChildren();
-  welcomeHero.hidden = false;
-  promptBox.value = '';
-  chatStatus.textContent = '';
-  chatStatus.className = 'status-line';
+  welcomeHero.hidden=false;
+  promptBox.value='';
+  chatStatus.textContent='';
+  chatStatus.className='status-line';
   closeModal();
-  if(innerWidth<=700) sidebar.classList.add('closed');
+  renderHistory();
+  if(innerWidth<=700)sidebar.classList.add('closed');
   promptBox.focus();
 }
-function loadHistory(title){
-  promptBox.value = title;
-  promptBox.focus();
-  if(innerWidth<=700) sidebar.classList.add('closed');
+function loadHistory(id){
+  const chat=chatStore.find(c=>c.id===id);
+  if(!chat)return;
+  activeChatId=chat.id;
+  conversationHistory=Array.isArray(chat.messages)?chat.messages.slice():[];
+  conversation.replaceChildren();
+  welcomeHero.hidden=true;
+  conversationHistory.forEach(message=>addMessage(message.role,message.content||''));
+  renderHistory();
+  chatStatus.textContent='Saved conversation';
+  chatStatus.className='status-line';
+  if(innerWidth<=700)sidebar.classList.add('closed');
+  document.querySelector('.chat-area').scrollTop=document.querySelector('.chat-area').scrollHeight;
+}
+
+const toolDefinitions={
+  'Lesson plan':{
+    intro:'Prepare one complete lesson. Add the specific topic and lesson details.',
+    fields:[
+      ['subject','Subject','select','Biology|Chemistry|Physics|Mathematics|English|Geography|History|ICT|Other',true],
+      ['classLevel','Class / level','select','Primary 1|Primary 2|Primary 3|Primary 4|Primary 5|Primary 6|Primary 7|Senior 1|Senior 2|Senior 3|Senior 4|Senior 5|Senior 6|Other',true],
+      ['topic','Topic / learning area','text','',true,'e.g. Cell structure and organisation'],
+      ['duration','Lesson duration','select','40 minutes|60 minutes|80 minutes|Double lesson|Other',true],
+      ['date','Date / week','text','',false,'Optional'],
+      ['objectives','Learning outcomes / objectives','textarea','',false,'Optional — AI can formulate these'],
+      ['extra','Additional instructions','textarea','',false,'Optional']
+    ]
+  },
+  'Scheme of work':{
+    intro:'A scheme of work plans teaching across a full term or year. It should cover multiple topics and subtopics, not just one lesson.',
+    fields:[
+      ['subject','Subject','select','Biology|Chemistry|Physics|Mathematics|English|Geography|History|ICT|Other',true],
+      ['classLevel','Class / level','select','Primary 1|Primary 2|Primary 3|Primary 4|Primary 5|Primary 6|Primary 7|Senior 1|Senior 2|Senior 3|Senior 4|Senior 5|Senior 6|Other',true],
+      ['period','Planning period','select','Term 1|Term 2|Term 3|Full academic year',true],
+      ['year','Academic year','text','',false,'e.g. 2027'],
+      ['weeks','Number of teaching weeks','number','',true,'e.g. 12'],
+      ['lessons','Lessons / periods per week','number','',true,'e.g. 4'],
+      ['topics','Topics / syllabus coverage','textarea','',true,'List the syllabus topics if available; otherwise ask AI to propose a complete sequence.'],
+      ['resources','Available resources','textarea','',false,'Optional'],
+      ['extra','Special requirements','textarea','',false,'Optional']
+    ]
+  },
+  'Examination paper':{
+    intro:'Set the assessment scope and structure. The AI will prepare the paper and can include a separate marking guide if requested.',
+    fields:[
+      ['subject','Subject','select','Biology|Chemistry|Physics|Mathematics|English|Geography|History|ICT|Other',true],
+      ['classLevel','Class / level','select','Primary 1|Primary 2|Primary 3|Primary 4|Primary 5|Primary 6|Primary 7|Senior 1|Senior 2|Senior 3|Senior 4|Senior 5|Senior 6|Other',true],
+      ['scope','Topics to examine','textarea','',true,'List all topics to be assessed'],
+      ['paperType','Assessment type','select','Weekly test|Topical test|Mid-term examination|End-of-term examination|Mock examination|UNEB-style practice',true],
+      ['duration','Duration','text','',true,'e.g. 1 hour 30 minutes'],
+      ['marks','Total marks','number','',true,'e.g. 100'],
+      ['difficulty','Difficulty / level','select','Mixed ability|Basic|Standard|Challenging',true],
+      ['extra','Special instructions','textarea','',false,'Optional']
+    ]
+  },
+  'Marking guide':{
+    intro:'Provide the questions or upload/paste the assessment content so the marking guide matches the actual paper.',
+    fields:[
+      ['subject','Subject','select','Biology|Chemistry|Physics|Mathematics|English|Geography|History|ICT|Other',true],
+      ['classLevel','Class / level','select','Primary 1|Primary 2|Primary 3|Primary 4|Primary 5|Primary 6|Primary 7|Senior 1|Senior 2|Senior 3|Senior 4|Senior 5|Senior 6|Other',true],
+      ['paper','Question paper / questions','textarea','',true,'Paste the questions here'],
+      ['marks','Total marks','number','',false,'Optional'],
+      ['style','Marking detail','select','Answers only|Detailed marking points|Analytical rubric with mark allocation',true],
+      ['extra','Additional instructions','textarea','',false,'Optional']
+    ]
+  },
+  'Teaching notes':{
+    intro:'Prepare structured teaching notes for one topic or learning area.',
+    fields:[
+      ['subject','Subject','select','Biology|Chemistry|Physics|Mathematics|English|Geography|History|ICT|Other',true],
+      ['classLevel','Class / level','select','Primary 1|Primary 2|Primary 3|Primary 4|Primary 5|Primary 6|Primary 7|Senior 1|Senior 2|Senior 3|Senior 4|Senior 5|Senior 6|Other',true],
+      ['topic','Topic / learning area','text','',true,'Enter a topic'],
+      ['depth','Depth','select','Brief revision notes|Detailed classroom notes|Comprehensive notes with examples and activities',true],
+      ['extra','Additional instructions','textarea','',false,'Optional']
+    ]
+  }
+};
+function fieldMarkup(field){
+  const [name,label,type,options,required,placeholder]=field;
+  const req=required?'required':'';
+  if(type==='select'){
+    const opts=options.split('|').map(v=>`<option value="${v}">${v}</option>`).join('');
+    return `<div class="field"><label for="tool_${name}">${label}${required?' *':''}</label><select id="tool_${name}" name="${name}" ${req}>${opts}</select></div>`;
+  }
+  if(type==='textarea'){
+    return `<div class="field full"><label for="tool_${name}">${label}${required?' *':''}</label><textarea id="tool_${name}" name="${name}" ${req} placeholder="${placeholder||''}"></textarea></div>`;
+  }
+  return `<div class="field"><label for="tool_${name}">${label}${required?' *':''}</label><input id="tool_${name}" name="${name}" type="${type}" ${req} ${placeholder?`placeholder="${placeholder}"`:''} ${type==='number'?'min="1"':''}></div>`;
 }
 function openTool(tool){
   currentTool=tool;
-  document.getElementById('modalTitle').textContent='Create '+(tool==='Examination paper'?'an examination paper':tool.toLowerCase());
+  const def=toolDefinitions[tool];
+  document.getElementById('modalTitle').textContent=tool==='Examination paper'?'Create an examination paper':'Create '+tool.toLowerCase();
+  document.querySelector('.modal-intro').textContent=def.intro;
+  document.getElementById('toolFields').innerHTML=def.fields.map(fieldMarkup).join('');
   document.getElementById('modal').classList.add('open');
-  document.getElementById('topic').focus();
+  document.querySelector('#toolFields input, #toolFields select, #toolFields textarea')?.focus();
 }
 function closeModal(){document.getElementById('modal').classList.remove('open')}
 function backdropClose(e){if(e.target.id==='modal')closeModal()}
 
 document.getElementById('detailsForm').addEventListener('submit',e=>{
   e.preventDefault();
-  const f=new FormData(e.target);
-  requestText=`Please prepare a complete ${currentTool.toLowerCase()} for ${f.get('subject')} ${f.get('level')} on ${f.get('topic')}. Duration: ${f.get('duration')}. Preferred output: ${f.get('format')}. Additional instructions: ${f.get('extra')||'None'}. Please align it with the relevant Ugandan curriculum.`;
-  promptBox.value=requestText;
-  closeModal();
-  promptBox.focus();
+  const data=Object.fromEntries(new FormData(e.target).entries());
+  const def=toolDefinitions[currentTool];
+  const missing=def.fields.filter(f=>f[4]&&!String(data[f[0]]||'').trim());
+  if(missing.length){document.getElementById('tool_'+missing[0][0]).focus();return;}
+  const subject=data.subject||'';
+  const level=data.classLevel||'';
+  let prompt='';
+  if(currentTool==='Lesson plan'){
+    prompt=`Prepare one complete, classroom-ready lesson plan for ${subject}, ${level}, on the topic "${data.topic}". Lesson duration: ${data.duration}. Date/week: ${data.date||'Not specified'}. Learning outcomes/objectives: ${data.objectives||'Formulate appropriate measurable learning outcomes'}. Additional instructions: ${data.extra||'None'}. Align it with the relevant Ugandan curriculum and include the lesson phases, teacher and learner activities, instructional materials, assessment, and reflection.`;
+  }else if(currentTool==='Scheme of work'){
+    prompt=`Prepare a comprehensive scheme of work for ${subject}, ${level}, covering ${data.period}${data.year?' in '+data.year:''}. This is a term/year plan covering multiple topics and subtopics across ${data.weeks} teaching weeks, with ${data.lessons} lessons/periods per week. Syllabus topics or coverage guidance: ${data.topics}. Available resources: ${data.resources||'Suggest appropriate locally available resources'}. Special requirements: ${data.extra||'None'}. Organise it week by week in a clear table with week, topic, subtopics/content, learning outcomes, teaching and learning activities, instructional materials, references and assessment. Distribute the topics realistically across the entire selected period; do not make this a single-topic lesson plan. Align it with the relevant Ugandan curriculum.`;
+  }else if(currentTool==='Examination paper'){
+    prompt=`Set a ${data.paperType} for ${subject}, ${level}. Topics to assess: ${data.scope}. Duration: ${data.duration}. Total marks: ${data.marks}. Difficulty: ${data.difficulty}. Additional instructions: ${data.extra||'None'}. Prepare clear instructions, a balanced range of appropriate questions, mark allocations and curriculum alignment for Uganda. Do not provide the marking guide unless requested separately.`;
+  }else if(currentTool==='Marking guide'){
+    prompt=`Prepare a ${data.style.toLowerCase()} marking guide for ${subject}, ${level}, using these exact questions: ${data.paper}. Total marks: ${data.marks||'Use the marks shown in the questions'}. Additional instructions: ${data.extra||'None'}. Provide accurate expected answers, mark allocation and acceptable alternatives.`;
+  }else{
+    prompt=`Prepare ${data.depth.toLowerCase()} for ${subject}, ${level}, on "${data.topic}". Additional instructions: ${data.extra||'None'}. Align with the relevant Ugandan curriculum and organise the notes with clear headings, explanations, examples, learner activities and a short assessment.`;
+  }
+  promptBox.value=prompt;
   promptBox.style.height='auto';
   promptBox.style.height=Math.min(promptBox.scrollHeight,160)+'px';
+  closeModal();
+  promptBox.focus();
 });
-
 function addMessage(role, text, pending=false){
   const row=document.createElement('div');
   row.className='message '+role+(pending?' pending':'');
@@ -207,10 +383,9 @@ function setStatus(message, isError=false){
 }
 
 async function sendPrompt(){
-  if(isSending) return;
+  if(isSending)return;
   const q=promptBox.value.trim();
-  if(!q) return;
-
+  if(!q)return;
   const {data:sessionData,error:sessionError}=await supabaseClient.auth.getSession();
   if(sessionError){setStatus(sessionError.message,true);return;}
   if(!sessionData.session){
@@ -219,40 +394,42 @@ async function sendPrompt(){
     return;
   }
 
+  if(!activeChatId)activeChatId=(crypto.randomUUID?crypto.randomUUID():String(Date.now()));
   isSending=true;
   sendButton.disabled=true;
   promptBox.value='';
   promptBox.style.height='auto';
   welcomeHero.hidden=true;
+  conversationHistory.push({role:'user',content:q});
   addMessage('user',q);
+  persistActiveChat();
   const pendingBubble=addMessage('assistant','Mwalimu AI is thinking…',true);
   setStatus('Connecting to Mwalimu AI…');
 
   try{
     const {data,error}=await supabaseClient.functions.invoke('mwalimu-ai',{
-      body:{
-        task:'chat',
-        message:q,
-        messages:conversationHistory.slice(-12)
-      }
+      body:{task:'chat',message:q,messages:conversationHistory.slice(0,-1).slice(-12)}
     });
     if(error){
       let detail=error.message||'The AI request failed.';
       try{
-        const payload=error.context && await error.context.json();
-        if(payload?.error) detail=payload.error+(payload.details?.length?': '+payload.details.join('; '):'');
+        const payload=error.context&&await error.context.json();
+        if(payload?.error)detail=payload.error+(payload.details?.length?': '+payload.details.join('; '):'');
       }catch(_){}
       throw new Error(detail);
     }
     const answer=data?.text||data?.response;
-    if(!data?.ok||!answer) throw new Error(data?.error||'Mwalimu AI returned an empty response.');
+    if(!data?.ok||!answer)throw new Error(data?.error||'Mwalimu AI returned an empty response.');
     pendingBubble.textContent=answer;
     pendingBubble.parentElement.classList.remove('pending');
-    conversationHistory.push({role:'user',content:q},{role:'assistant',content:answer});
+    conversationHistory.push({role:'assistant',content:answer});
+    persistActiveChat();
     setStatus(data.provider==='gemini'?'Answered by Mwalimu AI · Gemini':'Answered by Mwalimu AI');
   }catch(error){
     pendingBubble.textContent='I could not complete that request. '+(error.message||'Please try again.');
     pendingBubble.parentElement.classList.remove('pending');
+    conversationHistory.push({role:'assistant',content:pendingBubble.textContent});
+    persistActiveChat();
     setStatus(error.message||'Something went wrong. Please try again.',true);
   }finally{
     isSending=false;
@@ -314,10 +491,29 @@ document.getElementById('workspaceAuthForm').addEventListener('submit',async e=>
 
 supabaseClient.auth.getSession().then(({data,error})=>{
   if(error){setStatus(error.message,true);return;}
-  if(!data.session) authGate.classList.add('show');
+  if(!data.session){authGate.classList.add('show');return;}
+  currentUserId=data.session.user.id;
+  loadStoredChats();
 });
 supabaseClient.auth.onAuthStateChange((_event,session)=>{
-  if(session) authGate.classList.remove('show');
+  if(session){
+    authGate.classList.remove('show');
+    if(currentUserId!==session.user.id){
+      currentUserId=session.user.id;
+      activeChatId=null;
+      conversationHistory=[];
+      conversation.replaceChildren();
+      welcomeHero.hidden=false;
+      loadStoredChats();
+    }
+  }else{
+    currentUserId=null;
+    activeChatId=null;
+    conversationHistory=[];
+    conversation.replaceChildren();
+    welcomeHero.hidden=false;
+    loadStoredChats();
+  }
 });
 
 if(innerWidth<=700)sidebar.classList.add('closed');
