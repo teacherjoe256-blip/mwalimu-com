@@ -414,6 +414,10 @@
     .resource-card-tags span { border: 1px solid var(--line); color: #68766e; border-radius: 99px; padding: 4px 7px; font-size: 9px; }
     .resource-card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; border-top: 1px solid var(--line); padding-top: 13px; margin-top: auto; }
     .resource-card-bottom small { color: #8a968d; font-size: 10px; }
+    .resource-download-actions { display: inline-flex; align-items: center; gap: 9px; flex: 0 0 auto; }
+    .resource-download-count { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); font-size: 10px; font-weight: 700; white-space: nowrap; }
+    .resource-download-count svg { width: 14px; height: 14px; display: block; }
+
     .download-button { border: 0; background: var(--forest); color: white; border-radius: 99px; padding: 9px 12px; font-size: 10px; font-weight: 850; cursor: pointer; }
     .download-button:hover { background: var(--forest-deep); }
     .empty-results { text-align: center; background: var(--paper); border: 1px dashed #cbd8ce; padding: 35px 18px; border-radius: 18px; }
@@ -951,8 +955,38 @@
     function displayTerm(term) {
       return term ? term.replace('-', ' ').replace(/\b\w/g, c => c.toUpperCase()) : 'All terms';
     }
+    let resourceDownloadCounts = new Map();
+    async function loadResourceDownloadCounts() {
+      const { data, error } = await supabaseClient
+        .from('mwalimu_public_counters')
+        .select('content_id,total_count')
+        .eq('content_kind', 'resource');
+      if (error) {
+        console.warn('Mwalimu resource download counters:', error.message);
+        resourceDownloadCounts = new Map();
+        return;
+      }
+      resourceDownloadCounts = new Map((data || []).map(row => [String(row.content_id), Number(row.total_count || 0)]));
+    }
+    async function refreshResourceDownloadCount(resourceId) {
+      const { data, error } = await supabaseClient
+        .from('mwalimu_public_counters')
+        .select('total_count')
+        .eq('content_kind', 'resource')
+        .eq('content_id', resourceId)
+        .maybeSingle();
+      if (error) {
+        console.warn('Mwalimu resource download count refresh:', error.message);
+        return;
+      }
+      const count = Number(data?.total_count || 0);
+      resourceDownloadCounts.set(String(resourceId), count);
+      const badge = resourceResults.querySelector(`[data-resource-download-count="${CSS.escape(String(resourceId))}"]`);
+      if (badge) badge.querySelector('span').textContent = count.toLocaleString();
+    }
     async function loadPublishedResources() {
       document.getElementById('resultsCount').textContent = 'Loading resources…';
+      await loadResourceDownloadCounts();
       const { data, error } = await supabaseClient
         .from('resources')
         .select('id,level,class_level,subject,term,resource_type,title,description,file_path,file_name,mime_type,created_at')
@@ -1009,7 +1043,16 @@
           <h4>${escapeHtml(item.title)}</h4>
           <p>${escapeHtml(item.summary)}</p>
           <div class="resource-card-tags"><span>${escapeHtml(item.cls)}</span><span>${escapeHtml(item.subject)}</span><span>${escapeHtml(item.term)}</span></div>
-          <div class="resource-card-bottom"><small>${escapeHtml(item.updated)}</small><button class="download-button" data-download-id="${escapeHtml(item.id)}">Download</button></div>
+          <div class="resource-card-bottom">
+            <small>${escapeHtml(item.updated)}</small>
+            <div class="resource-download-actions">
+              <span class="resource-download-count" data-resource-download-count="${escapeHtml(item.id)}" title="Successful downloads">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v3h16v-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>${(resourceDownloadCounts.get(String(item.id)) || 0).toLocaleString()}</span>
+              </span>
+              <button class="download-button" data-download-id="${escapeHtml(item.id)}">Download</button>
+            </div>
+          </div>
         </article>`).join('');
       emptyResults.hidden = filtered.length !== 0;
       resourceResults.hidden = filtered.length === 0;
@@ -1126,7 +1169,11 @@
         link.remove();
         setTimeout(() => URL.revokeObjectURL(objectUrl), 30000);
         const { error: logError } = await supabaseClient.from('resource_downloads').insert({ resource_id: activeResource.id, user_id: currentUser.id });
-        if (logError) console.warn('Download log could not be saved:', logError.message);
+        if (logError) {
+          console.warn('Download log could not be saved:', logError.message);
+        } else {
+          await refreshResourceDownloadCount(activeResource.id);
+        }
       } catch (error) {
         alert(error.message || 'The download could not be prepared. Please try again.');
       }
@@ -1237,6 +1284,5 @@
   });
 </script>
 <script src="/mwalimu-public-content.js"></script>
-  <script src="/mwalimu-analytics.js" defer></script>
 </body>
 </html>
