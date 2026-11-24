@@ -252,7 +252,7 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:#43856a;box-shado
 <script>
 const SUPABASE_URL="https://ilzbxafrtxfurccqdpub.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_xodjAhF80sHdlo_8TyDCEA_B2ZCA5t_";
-const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);window.__MWALIMU_DB__=db;
 const $=id=>document.getElementById(id);
 let user=null,resources=[],editing=null,recoveryMode=false;
 const subjects={primary:["English","Literacy","Mathematics","Science","Social Studies","Religious Education"],secondary:["Biology","Chemistry","English","Geography","History","ICT","Mathematics","Physics"]};
@@ -381,4 +381,5 @@ await loadResources()
  checkSession();
 
 </script>
+  <script src="/mwalimu-analytics.js" defer></script>
 </body></html>
