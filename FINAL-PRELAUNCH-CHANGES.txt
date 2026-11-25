@@ -1,0 +1,24 @@
+mwalimu.site — Final pre-launch visual refresh
+
+Branding
+- Replaced outdated former-domain brand references in site pages with the exact lowercase mwalimu.site name.
+- Replaced the old graduation-cap brand mark in public headers with the new M/book emblem.
+- Added SVG, ICO, PNG, and Apple touch favicon assets.
+- Standardised forest-green, soft-green, white, charcoal, and warm-gold styling.
+
+Shared UI
+- Added subtle shadows to image-led cards, tiles, and content panels.
+- Refined pill navigation on inner pages (homepage navigation layout remains unchanged).
+- Added subtle shadows and a restrained glass-like finish to pill-style actions.
+- Reduced unnecessary vertical spacing in common content areas.
+- Rebuilt the shared footer with a centered mwalimu.site wordmark and description, followed by two columns of links/contact information.
+
+Page-specific
+- Jobs: replaced the oversized intro with the first homepage hero image above a forest-green opportunities panel.
+- Academy: increased soft-green presence and restyled Watch on YouTube actions in green.
+- Community: added a locally bundled illustrated teachers-collaboration hero and linked Explore community action to the existing WhatsApp group.
+- Admin: removed the header wordmark/email area while retaining the hamburger menu; restyled the drawer and dashboard to match the public brand; added the shared footer.
+
+Preservation
+- Existing page content, Supabase scripts/configuration, automation scripts, Cloudflare _redirects, and SEO files were retained.
+- This is a static-file visual refresh; live deployment and browser/device QA should still be completed before launch.

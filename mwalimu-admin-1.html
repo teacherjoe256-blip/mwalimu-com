@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#123c2e">
-<title>Mwalimu.com | Admin</title>
+<title>mwalimu.site | Admin</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
@@ -25,9 +25,47 @@ label{display:block;font-weight:750;font-size:12px;margin:13px 0 6px}input,selec
 @media(max-width:800px){.grid{grid-template-columns:1fr}.intro{display:block}.stats{flex-wrap:wrap}.resource{align-items:flex-start;flex-direction:column}.resource-actions{justify-content:flex-start}.row{grid-template-columns:1fr 1fr}}
 </style>
 <meta name="robots" content="noindex, nofollow, noarchive">
+
+<!-- mwalimu.site final brand and UI refinement -->
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<meta name="theme-color" content="#064b32">
+<style id="mwalimu-final-brand-system">
+:root{--mwalimu-forest:#064b32;--mwalimu-deep:#032f20;--mwalimu-green:#16834b;--mwalimu-soft:#e8f2eb;--mwalimu-gold:#d9ad58;--mwalimu-cream:#f7f4eb;--mwalimu-ink:#172d23}
+.brand-mark{background:var(--mwalimu-forest)!important;border-radius:18px!important;overflow:hidden;box-shadow:0 7px 18px rgba(3,47,32,.13)}
+.brand-mark img{display:block;width:76%;height:76%;object-fit:contain}
+.brand-name{color:var(--mwalimu-ink)!important}.brand-name span{color:var(--mwalimu-gold)!important}
+.site-header nav a{display:inline-flex;align-items:center;justify-content:center;padding:10px 15px!important;border:1px solid rgba(6,75,50,.10);border-radius:999px;background:rgba(232,242,235,.72);box-shadow:0 3px 10px rgba(20,50,34,.06);transition:background .2s,transform .2s,box-shadow .2s}
+.site-header nav a:hover,.site-header nav a.active{background:#dcebe1!important;color:var(--mwalimu-forest)!important;box-shadow:0 5px 14px rgba(6,75,50,.12);transform:translateY(-1px)}
+.feature-card,.resource-card,.resource-level-card,.course-card,.academy-card,.job-card,.mw-panel,.tile,.card,.content-card,.update-card,.community-card{box-shadow:0 10px 24px rgba(19,49,33,.075)!important}
+.feature-card img,.resource-card img,.course-card img,.academy-card img,.community-hero img{filter:drop-shadow(0 5px 9px rgba(19,49,33,.07))}
+button,.mw-button,.watch-link,.feature-cta,.nav-cta,.hero-points span,.pill,.tag-pill{box-shadow:0 4px 12px rgba(19,49,33,.10)}
+.mw-button,.watch-link,.feature-cta,.nav-cta{border:1px solid rgba(255,255,255,.38);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
+.mw-button.secondary,.watch-link{background:linear-gradient(135deg,rgba(220,235,225,.96),rgba(201,225,210,.88))!important;color:#123b29!important;border:1px solid rgba(6,75,50,.10)!important}
+.mw-footer{background:#032f20!important;padding:42px 0 18px!important}
+.mw-footer-inner{width:min(1160px,calc(100% - 40px));margin:0 auto;display:grid!important;grid-template-columns:1fr 1fr!important;gap:28px 44px!important}
+.mw-footer-brand{grid-column:1/-1;text-align:center;display:flex;flex-direction:column;align-items:center}
+.mw-footer-logo{font-size:clamp(27px,4vw,36px)!important;font-weight:850;letter-spacing:-.045em;color:#fff!important;text-decoration:none}
+.mw-footer-logo span{color:#d9ad58!important}
+.mw-footer-brand p{max-width:820px!important;margin:14px auto 8px!important;color:#d4e1d8!important;font-size:15px!important;line-height:1.75!important}
+.mw-footer-community{color:#f0d59d!important}
+.mw-footer-col{padding:8px 0;min-width:0}
+.mw-footer-col h2{color:#d9ad58!important}
+.mw-footer-col a{font-size:14px!important;line-height:1.55}
+.mw-footer-bottom{width:min(1160px,calc(100% - 40px));margin:28px auto 0!important}
+main>section{scroll-margin-top:90px}main article:has(img),main a:has(>img),.image-tile,.section-tile,.resource-tile,.level-card,.job-listing,.course-item{box-shadow:0 10px 24px rgba(19,49,33,.075)!important}main section+section{margin-top:clamp(18px,3vw,34px)}.feature-card img,.image-tile img,.section-tile img{border-radius:inherit}
+.mw-page{margin-top:clamp(24px,4vw,42px)!important;margin-bottom:clamp(30px,5vw,54px)!important}
+.mw-page>.mw-panel{margin-top:18px!important;margin-bottom:18px!important}
+section:empty{display:none!important}
+@media(max-width:700px){.mw-footer-inner{grid-template-columns:1fr 1fr!important;gap:22px 18px!important}.mw-footer-brand{grid-column:1/-1}.mw-footer-col{gap:9px}.mw-footer-col a{overflow-wrap:anywhere}.site-header nav{gap:7px!important;flex-wrap:wrap}.site-header nav a{padding:8px 11px!important;font-size:12px}}
+@media(max-width:420px){.mw-footer-inner{gap:20px 12px!important}.mw-footer-col a{font-size:12px!important}.mw-footer-col h2{font-size:12px!important}}
+</style>
+
+<style id="mwalimu-admin-1-brand">header{background:#064b32!important;color:#fff!important}header .brand{color:#fff!important}header .brand span{color:#d9ad58!important}.panel,.resource-row{box-shadow:0 9px 24px rgba(19,49,33,.07)!important;border-radius:18px!important}.btn{border-radius:999px!important}</style>
 </head>
 <body>
-<header><div class="brand">Mwalimu<span>.com</span> <small style="font-size:11px;font-weight:600;opacity:.8">ADMIN</small></div><div class="header-right"><span id="who" class="topnote"></span><button id="logout" class="btn secondary small" hidden>Sign out</button></div></header>
+<header><div class="brand">Mwalimu<span>.site</span> <small style="font-size:11px;font-weight:600;opacity:.8">ADMIN</small></div><div class="header-right"><span id="who" class="topnote"></span><button id="logout" class="btn secondary small" hidden>Sign out</button></div></header>
 <section id="login" class="panel">
  <div class="eyebrow">Administrator access</div><h1>Welcome back.</h1><p class="sub">Sign in with your mwalimu.site administrator account.</p>
  <form id="loginForm"><label>Email address</label><input id="email" type="email" autocomplete="username" required value="adminmwalimu@gmail.com"><label>Password</label><input id="password" type="password" autocomplete="current-password" required><button class="btn" style="width:100%;margin-top:18px" id="loginBtn">Sign in to dashboard</button></form>
@@ -416,4 +454,6 @@ showApp = function() {
  checkSession();
 
 </script>
+<footer class="mw-footer mw-admin-footer" role="contentinfo"><div class="mw-footer-inner"><div class="mw-footer-brand"><a href="/index.html" class="mw-footer-logo">mwalimu<span>.site</span></a><p>Uganda's digital platform for teachers — bringing together classroom resources, teaching opportunities, professional development, practical AI support and an educator community.</p><a class="mw-footer-community" href="/community.html">Explore the Mwalimu Teachers Community →</a></div><div class="mw-footer-col"><h2>Explore</h2><a href="/resources.html">Teaching resources</a><a href="/jobs.html">Teaching jobs in Uganda</a><a href="/academy.html">Mwalimu Academy</a><a href="/ai.html">AI tools for teachers</a><a href="/updates.html">Education updates</a></div><div class="mw-footer-col mw-footer-contact"><h2>About &amp; contact</h2><a href="/about.html">About mwalimu.site</a><a href="/contact.html">Contact us</a><a href="/privacy.html">Privacy policy</a><a href="/terms.html">Terms of use</a><a href="tel:+256762160688">Tel: +256 762 160 688</a><a href="tel:+256703621213">Tel: +256 703 621 213</a><a href="https://wa.me/256762160688" target="_blank" rel="noopener noreferrer">WhatsApp: +256 762 160 688</a><a href="mailto:adminmwalimu@gmail.com">adminmwalimu@gmail.com</a></div></div><div class="mw-footer-bottom"><span>© mwalimu.site 2026</span><span>Built for the people who teach.</span></div></footer>
+
 </body></html>
