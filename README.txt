@@ -1,4 +1,4 @@
-# Mwalimu.com footer and information pages update
+# mwalimu.site footer and information pages update
 
 This package adds four matching information pages and a small script to replace the four `href="#"` footer placeholders in your existing HTML files.
 

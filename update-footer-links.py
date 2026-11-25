@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Update Mwalimu.com footer placeholder links in HTML files in this folder."""
+"""Update mwalimu.site footer placeholder links in HTML files in this folder."""
 from pathlib import Path
 import re
 
