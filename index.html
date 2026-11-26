@@ -590,6 +590,12 @@
 .community-copy .community-join-btn:hover{background:var(--forest-deep)!important;border-color:var(--forest-deep)!important;transform:translateY(-1px);box-shadow:0 5px 12px rgba(24,55,41,.18)!important}
 @media(max-width:600px){.browse-resource-btn{padding:2px 0!important}.community-copy .community-join-btn{padding:7px 13px!important}}
 .jobs-feature-panel{position:relative;display:flex;align-items:center;gap:24px;padding:27px 30px;background:var(--paper);border:1px solid var(--line);border-radius:22px;box-shadow:0 8px 24px rgba(27,57,42,.06)}
+.jobs-feature-panel .jobs-panel-link{position:absolute;inset:0;z-index:1;border-radius:inherit;text-decoration:none}
+.jobs-feature-panel .jobs-feature-copy,.jobs-feature-panel .jobs-label{position:relative;z-index:2;pointer-events:none}
+.jobs-feature-panel .jobs-feature-copy .feature-cta{position:relative;z-index:3;pointer-events:auto}
+.jobs-feature-panel:focus-within{outline:2px solid var(--forest);outline-offset:3px}
+.jobs-feature-panel:hover{cursor:pointer}
+
 .jobs-label{flex:0 0 auto;display:inline-flex;align-items:center;background:var(--forest);color:#fff;padding:10px 17px;border-radius:999px;font-size:12px;font-weight:800;letter-spacing:.02em}
 .jobs-feature-copy h3{margin:0 0 7px;font-size:clamp(19px,2.4vw,25px);letter-spacing:-.6px}
 .jobs-feature-copy p{margin:0 0 13px;color:var(--muted);font-size:13px;max-width:680px}
@@ -669,19 +675,19 @@
         <div class="resource-grid">
           <article class="resource-card searchable">
             <div class="resource-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4.5A2.5 2.5 0 0 1 7.5 2H20v17H7.5A2.5 2.5 0 0 0 5 21.5z"></path><path d="M5 4.5v17M9 7h7M9 11h7"></path></svg></div>
-            <h3>Schemes of Work</h3><p>Plan your teaching across the term with useful structures.</p><button class="text-link open-resource-library browse-resource-btn" data-resource-category="Schemes of Work"><span>Browse resources</span></button>
+            <h3>Schemes of Work</h3><p>Plan your teaching across the term with useful structures.</p><a class="text-link open-resource-library browse-resource-btn" href="/resources.html?category=Schemes%20of%20Work" data-resource-category="Schemes of Work"><span>Browse resources</span></a>
           </article>
           <article class="resource-card searchable">
             <div class="resource-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><path d="M8 7h8M8 11h8"></path></svg></div>
-            <h3>Lesson Plans</h3><p>Build clear, purposeful lessons for your learners.</p><button class="text-link open-resource-library browse-resource-btn" data-resource-category="Lesson Plans"><span>Browse resources</span></button>
+            <h3>Lesson Plans</h3><p>Build clear, purposeful lessons for your learners.</p><a class="text-link open-resource-library browse-resource-btn" href="/resources.html?category=Lesson%20Plans" data-resource-category="Lesson Plans"><span>Browse resources</span></a>
           </article>
           <article class="resource-card searchable">
             <div class="resource-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 0 4 22.5z"></path><path d="M4 5.5v17M8 7h8M8 11h8M8 15h5"></path></svg></div>
-            <h3>Notes & Materials</h3><p>Learning notes and classroom materials for different subjects.</p><button class="text-link open-resource-library browse-resource-btn" data-resource-category="Notes & Learning Materials"><span>Browse resources</span></button>
+            <h3>Notes & Materials</h3><p>Learning notes and classroom materials for different subjects.</p><a class="text-link open-resource-library browse-resource-btn" href="/resources.html?category=Notes%20%26%20Learning%20Materials" data-resource-category="Notes & Learning Materials"><span>Browse resources</span></a>
           </article>
           <article class="resource-card searchable">
             <div class="resource-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3h10a2 2 0 0 1 2 2v16H5V5a2 2 0 0 1 2-2z"></path><path d="M8 8h8M8 12h8M8 16h5"></path></svg></div>
-            <h3>Tests & Exercises</h3><p>Questions and practice materials to support assessment.</p><button class="text-link open-resource-library browse-resource-btn" data-resource-category="Tests & Examinations"><span>Browse resources</span></button>
+            <h3>Tests & Exercises</h3><p>Questions and practice materials to support assessment.</p><a class="text-link open-resource-library browse-resource-btn" href="/resources.html?category=Tests%20%26%20Examinations" data-resource-category="Tests & Examinations"><span>Browse resources</span></a>
           </article>
         </div>
       </div>
@@ -690,6 +696,7 @@
   <section class="content-section wrap" id="jobs">
     <div class="section-heading"><span class="eyebrow">Mwalimu jobs</span><h2>Keep your next opportunity in sight.</h2><p>Teaching and education opportunities worth checking regularly.</p></div>
     <div class="jobs-feature-panel">
+      <a class="jobs-panel-link" href="/jobs.html" aria-label="Open Mwalimu Jobs"></a>
       <span class="jobs-label">Mwalimu Jobs</span>
       <div class="jobs-feature-copy">
         <h3>Teaching and education opportunities in one place.</h3>
@@ -1139,7 +1146,9 @@
         openLibrary(button.dataset.level, category);
       });
     });
-    document.querySelectorAll('.open-resource-library').forEach(button => {
+    // Homepage resource cards use real /resources.html links, so navigation works even if this script fails.
+    // Keep this handler only for any legacy button instances that may still exist.
+    document.querySelectorAll('button.open-resource-library').forEach(button => {
       button.addEventListener('click', () => {
         const q = new URLSearchParams();
         if (button.dataset.resourceCategory) q.set('category', button.dataset.resourceCategory);
