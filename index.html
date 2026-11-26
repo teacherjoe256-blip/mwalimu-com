@@ -578,6 +578,32 @@
 @media(max-width:540px){.mw-footer{padding-top:34px!important}.mw-footer-inner{grid-template-columns:1fr 1fr!important;gap:22px 18px!important}.mw-footer-col h2{font-size:12px!important}.mw-footer-col a{font-size:13px!important}.mw-footer-contact-icons{gap:16px}.mw-contact-icon{width:43px;height:43px}.mw-footer-bottom{flex-direction:column!important;gap:6px!important}}
 </style>
 <style id="mwalimu-final-refinements">
+/* Homepage live jobs carousel */
+.jobs-live-board{background:linear-gradient(135deg,#0c633d,#087b49);border-radius:24px;padding:22px;box-shadow:0 12px 30px rgba(15,75,47,.16);overflow:hidden;color:#fff}
+.jobs-live-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.jobs-live-board .jobs-label{background:#fff;color:#12633f;padding:9px 16px;border-radius:999px;font-size:12px;font-weight:850;letter-spacing:.02em}
+.jobs-live-status{font-size:12px;color:rgba(255,255,255,.88);display:flex;align-items:center;gap:8px}
+.jobs-live-status i{width:8px;height:8px;border-radius:50%;background:#a7f3c5;box-shadow:0 0 0 4px rgba(167,243,197,.16)}
+.jobs-carousel{overflow:hidden;border-radius:17px}
+.jobs-carousel-track{display:flex;transition:transform .55s cubic-bezier(.2,.75,.25,1);will-change:transform}
+.homepage-job-card{flex:0 0 100%;min-width:0;box-sizing:border-box;background:#fff;color:#173c2b;border-radius:17px;padding:22px 24px;min-height:174px;display:flex;flex-direction:column;align-items:flex-start}
+.homepage-job-card h3{font-size:clamp(18px,2.3vw,23px);line-height:1.25;letter-spacing:-.45px;margin:0 0 8px;color:#153c29}
+.homepage-job-card .job-employer{font-size:13px;font-weight:750;color:#26724d;margin:0 0 7px}
+.homepage-job-card .job-summary{font-size:13px;line-height:1.55;color:#64756b;margin:0 0 14px;max-width:760px}
+.homepage-job-card .job-meta{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 14px}
+.homepage-job-card .job-meta span{font-size:11px;color:#286247;background:#edf7f0;border-radius:999px;padding:5px 9px}
+.homepage-job-card .job-explore{display:inline-flex;align-items:center;gap:7px;margin-top:auto;text-decoration:none;background:#087b49;color:#fff;border-radius:999px;padding:9px 15px;font-size:12px;font-weight:800;box-shadow:0 4px 12px rgba(8,123,73,.17)}
+.homepage-job-card .job-explore:hover{background:#075f39;transform:translateY(-1px)}
+.jobs-loading{justify-content:center;min-height:150px}.jobs-loading p{color:#64756b;margin:0;font-size:13px}
+.jobs-carousel-controls{display:flex;align-items:center;justify-content:space-between;margin-top:14px}
+.jobs-carousel-dots{display:flex;align-items:center;gap:7px}
+.jobs-carousel-dots button{width:7px;height:7px;border:0;padding:0;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer}
+.jobs-carousel-dots button.is-active{width:22px;border-radius:99px;background:#fff}
+.jobs-carousel-arrows{display:flex;gap:7px}
+.jobs-carousel-arrows button{width:31px;height:31px;border:1px solid rgba(255,255,255,.35);border-radius:50%;background:rgba(255,255,255,.12);color:#fff;font-size:22px;line-height:1;cursor:pointer}
+.jobs-carousel-arrows button:hover{background:rgba(255,255,255,.25)}
+@media(max-width:600px){.jobs-live-board{padding:15px;border-radius:19px}.homepage-job-card{padding:19px;min-height:190px}.jobs-live-top{margin-bottom:12px}}
+
 /* Final launch refinements: rounded CTAs, compact jobs panel, reliable logo and nested menu */
 .brand-mark{display:grid;place-items:center;overflow:hidden;background:var(--forest);border-radius:12px}
 .brand-mark img{display:block;width:100%;height:100%;object-fit:contain;padding:5px}
@@ -694,15 +720,15 @@
     </section>
 
   <section class="content-section wrap" id="jobs">
-    <div class="section-heading"><span class="eyebrow">Mwalimu jobs</span><h2>Keep your next opportunity in sight.</h2><p>Teaching and education opportunities worth checking regularly.</p></div>
-    <div class="jobs-feature-panel">
-      <a class="jobs-panel-link" href="/jobs.html" aria-label="Open Mwalimu Jobs"></a>
-      <span class="jobs-label">Mwalimu Jobs</span>
-      <div class="jobs-feature-copy">
-        <h3>Teaching and education opportunities in one place.</h3>
-        <p>Explore vacancies for teachers and education professionals, review application requirements and find your next opportunity.</p>
-        <a class="feature-cta" href="/jobs.html">Explore jobs <span>→</span></a>
+    <div class="section-heading"><span class="eyebrow">Mwalimu jobs</span><h2>Keep your next opportunity in sight.</h2><p>Fresh teaching and education opportunities, updated automatically.</p></div>
+    <div class="jobs-live-board" aria-label="Latest teaching job vacancies">
+      <div class="jobs-live-top"><span class="jobs-label">Mwalimu Jobs</span><span class="jobs-live-status"><i></i> Latest opportunities</span></div>
+      <div class="jobs-carousel" id="homepageJobsCarousel" aria-roledescription="carousel">
+        <div class="jobs-carousel-track" id="homepageJobsTrack" aria-live="polite">
+          <article class="homepage-job-card jobs-loading"><h3>Loading the latest teaching jobs…</h3><p>Fetching current opportunities.</p></article>
+        </div>
       </div>
+      <div class="jobs-carousel-controls"><div class="jobs-carousel-dots" id="homepageJobsDots" aria-label="Choose a job"></div><div class="jobs-carousel-arrows"><button type="button" id="homepageJobsPrev" aria-label="Previous job">‹</button><button type="button" id="homepageJobsNext" aria-label="Next job">›</button></div></div>
     </div>
   </section>
 
@@ -889,6 +915,40 @@
     const SUPABASE_URL = "https://ilzbxafrtxfurccqdpub.supabase.co";
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_xodjAhF80sHdlo_8TyDCEA_B2ZCA5t_";
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    // Load published vacancies from the same content table used by Mwalimu Jobs.
+    (function initHomepageJobsCarousel(){
+      const track = document.getElementById('homepageJobsTrack');
+      const dots = document.getElementById('homepageJobsDots');
+      const prev = document.getElementById('homepageJobsPrev');
+      const next = document.getElementById('homepageJobsNext');
+      if (!track || !dots) return;
+      let jobs = [], current = 0, timer = null;
+      const escapeText = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+      const dateLabel = value => { if(!value) return ''; const d = new Date(value+'T00:00:00'); return Number.isNaN(d.getTime()) ? '' : 'Deadline: '+d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); };
+      function render(){
+        if (!jobs.length) { track.innerHTML='<article class="homepage-job-card jobs-loading"><h3>No current vacancies to display</h3><p>Please check the Mwalimu Jobs page again soon.</p><a class="job-explore" href="/jobs.html">Explore More <span>→</span></a></article>'; dots.innerHTML=''; return; }
+        track.innerHTML = jobs.map(job => {
+          const employer = job.employer || job.source_name || 'Education employer';
+          const summary = job.summary || [job.school_level,job.subjects,job.location].filter(Boolean).join(' · ') || 'View the full vacancy for requirements and application details.';
+          const meta = [job.location,job.employment_type,dateLabel(job.deadline)].filter(Boolean).map(x=>'<span>'+escapeText(x)+'</span>').join('');
+          return '<article class="homepage-job-card"><h3>'+escapeText(job.title || 'Teaching opportunity')+'</h3><p class="job-employer">'+escapeText(employer)+'</p><p class="job-summary">'+escapeText(summary)+'</p>'+(meta?'<div class="job-meta">'+meta+'</div>':'')+'<a class="job-explore" href="/jobs.html?job='+encodeURIComponent(job.id)+'">Explore More <span>→</span></a></article>';
+        }).join('');
+        dots.innerHTML = jobs.map((_,i)=>'<button type="button" aria-label="Show job '+(i+1)+'" class="'+(i===current?'is-active':'')+'" data-job-dot="'+i+'"></button>').join('');
+        dots.querySelectorAll('[data-job-dot]').forEach(button=>button.addEventListener('click',()=>{go(Number(button.dataset.jobDot));restart();}));
+        update();
+      }
+      function update(){ track.style.transform='translateX(-'+(current*100)+'%)'; dots.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('is-active',i===current)); }
+      function go(index){if(!jobs.length)return;current=(index+jobs.length)%jobs.length;update();}
+      function restart(){if(timer)clearInterval(timer);if(jobs.length>1)timer=setInterval(()=>go(current+1),5000);}
+      prev?.addEventListener('click',()=>{go(current-1);restart();}); next?.addEventListener('click',()=>{go(current+1);restart();});
+      async function load(){
+        const {data,error}=await supabaseClient.from('mwalimu_site_content').select('id,title,summary,employer,location,deadline,employment_type,application_url,link_url,source_name,school_level,subjects,created_at,posted_at').eq('content_type','job').eq('is_published',true).eq('admin_hidden',false).order('created_at',{ascending:false}).limit(12);
+        if(error){console.error('Homepage jobs could not be loaded:',error);track.innerHTML='<article class="homepage-job-card jobs-loading"><h3>Teaching opportunities</h3><p>We could not load vacancies right now. Please try again shortly.</p><a class="job-explore" href="/jobs.html">Explore More <span>→</span></a></article>';return;}
+        jobs=data||[];current=0;render();restart();
+      }
+      load();
+    })();
     let currentUser = null;
     let authMode = "signup";
     let pendingDownload = false;
